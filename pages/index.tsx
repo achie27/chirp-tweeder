@@ -40,7 +40,7 @@ const Home: NextPage = () => {
           <div className="maincontentright-text">
             Login to your with your Twitter account
           </div>
-          loginSpace
+          {loginSpace}
         </div>
       </main>
 
