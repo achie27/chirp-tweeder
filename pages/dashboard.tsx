@@ -7,28 +7,33 @@ import { useEffect, useState } from 'react'
 import { Tweet, TweetsApi } from '../lib/twitter'
 const twitter = new TweetsApi()
 
-const Dashboard: NextPage = ({}) => {
-  const { data: session } = useSession();
+const Dashboard: NextPage = () => {
+  const { data: session, status } = useSession();
   const [tweets, setTweets] = useState<Array<Tweet>>([])
+  const router = useRouter()
+
   useEffect(() => {
     if (session) {
       fetch("/api/twitter/timeline").then(t => setTweets(t as any)).catch(console.error)
     }
   }, [session])
 
-  return (
-    <div>
-      <Head>
-        <title>Tweeder - filter your Twitter experience</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
+  if (status === "loading") {
+    return <>Checking your session</>
+  } else if (status === "authenticated") {
+    return <div>
       <main className="maincontent">
-        Aye mah man {JSON.stringify(session)}
+        {JSON.stringify(tweets)}
       </main>
 
      </div>
-  )
+
+  }
+
+  return <>
+  <>Please login first</> {router.push("/")}
+  </> 
+
 }
 
 export default Dashboard

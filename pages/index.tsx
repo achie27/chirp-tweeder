@@ -3,32 +3,33 @@ import Head from 'next/head'
 import Image from 'next/image'
 import { useSession, signIn, signOut } from "next-auth/react"
 import { useRouter } from 'next/router'
+import { useTwitterContext } from '../providers/TwitterContext'
 
 
 const Home: NextPage = () => {
-  const { data: session, status } = useSession()
+  const { loginStatus } = useTwitterContext()
   const router = useRouter()
 
   let loginSpace = <></>;
 
-  switch (status) {
-    case "authenticated":
-      router.push("/dashboard");
-      break;
-    case "loading":
-      loginSpace = <>Checking your session</>
-      break
-    case "unauthenticated":
-      loginSpace = <div className="maincontentright-login">
-      <button className="maincontentright-login-button" onClick={() => signIn("twitter", { redirect: false })}>Sign In</button>
-    </div>
-      break 
-  }
+  // switch (loginStatus) {
+  //   case "authenticated":
+  //     router.push("/dashboard");
+  //     break;
+  //   case "loading":
+  //     loginSpace = <>Checking your session</>
+  //     break
+  //   case "unauthenticated":
+  //     loginSpace = <div className="maincontentright-login">
+  //     <button className="maincontentright-login-button" onClick={() => signIn("twitter", { redirect: false })}>Sign In</button>
+  //   </div>
+  //     break 
+  // }
 
   return (
     <div>
       <Head>
-        <title>Tweeder - filter your Twitter experience</title>
+        <title>Tweeder - tend to your Twitter timeline</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
@@ -38,7 +39,7 @@ const Home: NextPage = () => {
         </div>
         <div className="maincontentright">
           <div className="maincontentright-text">
-            Login to your with your Twitter account
+            Login to your Twitter account
           </div>
           {loginSpace}
         </div>

@@ -15,8 +15,15 @@ export default async function handler(
   res: NextApiResponse<Data>
 ) {
   const session = await unstable_getServerSession(req, res, authOptions)
+  console.log(session)
+  try {
+    const d = await twitter.usersIdTimeline({ id: session?.id as string }, { headers: { "Authorization": "Bearer " + session?.accessToken }})
+  
+    res.status(200).json({ tweets: d.data } as any)
 
-  const d = await twitter.usersIdTimeline({ id: session?.id as string }, { headers: { "Authorization": "Bearer " + session?.accessToken }})
+  } catch (e) {
+    console.error(e)
+    res.status(500).json({ error: e } as any )
 
-  res.status(200).json({ tweets: d.data } as any)
+  }
 }
