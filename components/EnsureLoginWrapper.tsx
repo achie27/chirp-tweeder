@@ -1,4 +1,5 @@
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { FC, ReactNode } from "react";
 import { useTwitterContext } from "../providers/TwitterContext";
@@ -11,5 +12,5 @@ export const EnsureLoginWrapper: FC<{ children: ReactNode }> = ({ children }) =>
   }
   
   // TODO: change this
-  return <RedirectionPage/>;
+  return <Link href="/">Please log in first</Link>;
 }

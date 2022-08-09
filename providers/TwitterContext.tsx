@@ -2,6 +2,7 @@ import { Session } from "next-auth";
 import { SessionContextValue, useSession } from "next-auth/react";
 import { createContext, FC, ReactNode, useContext, useState } from "react"
 
+// TODO: add sign in and sing out functions here
 interface ITwitterContext {
   loginStatus: SessionContextValue["status"]
   session?: Session;

@@ -12,19 +12,19 @@ const Home: NextPage = () => {
 
   let loginSpace = <></>;
 
-  // switch (loginStatus) {
-  //   case "authenticated":
-  //     router.push("/dashboard");
-  //     break;
-  //   case "loading":
-  //     loginSpace = <>Checking your session</>
-  //     break
-  //   case "unauthenticated":
-  //     loginSpace = <div className="maincontentright-login">
-  //     <button className="maincontentright-login-button" onClick={() => signIn("twitter", { redirect: false })}>Sign In</button>
-  //   </div>
-  //     break 
-  // }
+  switch (loginStatus) {
+    case "authenticated":
+      router.push("/dashboard");
+      break;
+    case "loading":
+      loginSpace = <>Checking your session</>
+      break
+    case "unauthenticated":
+      loginSpace = <div className="maincontentright-login"> 
+      <button className="maincontentright-login-button" onClick={() => signIn("twitter", { redirect: false })}>Sign In</button>
+    </div>
+      break 
+  }
 
   return (
     <div>
