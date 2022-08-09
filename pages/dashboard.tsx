@@ -105,12 +105,64 @@ const TimelineFilter = styled.div`
   background-color: yellow;
   height: inherit;
   width: inherit;
+  `
+
+
+const TimelineFilterCreate = styled.div`
+  margin: 10px 15px;
+  padding: 10px 25px;
+  text-decoration: none;
+  background-color: #1d9bf0;
+  border:0;
+  border-radius: 40px;
+  border-color: white;
+  outline: 0;
+  color: white;
+  font-weight: bold;
+  &:hover {
+  	cursor: pointer;
+  }
+`
+
+const TimelineFilterCreateModal = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(91, 112, 131, 0.4);
+`
+
+
+const TimelineFilterCreateModalContent = styled.div`
+  width: 400px;
+  height: 200px;
+  position: absolute;
+  top: 20%;
+  left: calc(50% - 200px);
+  background-color: green;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`
+
+
+const TimelineFilterCreateModalClose = styled.div`
+  position: absolute;
+  right: 10px;
+  top: 5px;
+  font-size: 20px;
+  font-weight: bold;
+  &:hover {
+  	cursor: pointer;
+  }
 `
 
 const Dashboard: NextPage = () => {
   const { data: session, status } = useSession();
   const [tweets, setTweets] = useState<Array<Tweet>>([])
   const [selectedTimeline, setSelectedTimeline] = useState<string>("Home")
+  const [filterModalOpen, setFilterModalOpen] = useState<boolean>(false)
 
   console.log(status)
 
@@ -119,6 +171,15 @@ const Dashboard: NextPage = () => {
       fetch("/api/twitter/timeline").then(async t => setTweets((await t.json()).tweets)).catch(console.error)
     }
   }, [session])
+
+
+  useEffect(() => {
+    if (filterModalOpen) {
+
+    } else {
+
+    }
+  }, [filterModalOpen])
 
   return <>
     {/* <Header>
@@ -133,6 +194,7 @@ const Dashboard: NextPage = () => {
         </MenuList>
       </Menu>
     </Header> */}
+
   <Main>
     <TimelinesWrapper>
       <Timelines></Timelines>
@@ -148,9 +210,23 @@ const Dashboard: NextPage = () => {
       </TimelineTweets>
     </TimelineTweetsWrapper>
     <TimelineFilterWrapper>
-      <TimelineFilter></TimelineFilter>
+      {/* TODO:remove Header from here */}
+      <Header>
+        <TimelineFilterCreate onClick={() => {
+          console.log(filterModalOpen); 
+          setFilterModalOpen(true)
+        }}>Create a filter</TimelineFilterCreate>
+      </Header>
+      <TimelineFilter>
+      </TimelineFilter>
     </TimelineFilterWrapper>
   </Main>
+  <TimelineFilterCreateModal hidden={!filterModalOpen}>
+    <TimelineFilterCreateModalContent>
+      <TimelineFilterCreateModalClose onClick={() => setFilterModalOpen(false)}>X</TimelineFilterCreateModalClose>
+        You've been modaled
+      </TimelineFilterCreateModalContent>
+  </TimelineFilterCreateModal>
   </>
 
 }
