@@ -135,11 +135,11 @@ const TimelineFilterCreateModal = styled.div`
 
 
 const TimelineFilterCreateModalContent = styled.div`
-  width: 400px;
-  height: 200px;
+  width: 600px;
+  height: 400px;
   position: absolute;
-  top: 20%;
-  left: calc(50% - 200px);
+  top: 10%;
+  left: calc(50% - 300px);
   background-color: green;
   display: flex;
   align-items: center;
