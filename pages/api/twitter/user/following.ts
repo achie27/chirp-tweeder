@@ -11,7 +11,9 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const session = await unstable_getServerSession(req, res, authOptions)
-  console.log(session)
+  if (!session) {
+    return res.status(200).json({ users: [] })
+  }
   try {
     const d = await twitter.usersIdFollowing({ id: session?.id as string }, { headers: { "Authorization": "Bearer " + session?.accessToken }})
   

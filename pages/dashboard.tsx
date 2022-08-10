@@ -3,12 +3,13 @@ import Head from 'next/head'
 import Image from 'next/image'
 import { useSession, signIn, signOut } from "next-auth/react"
 import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Tweet, TweetsApi, User, UsersIdFollowingUserFieldsEnum } from '../lib/twitter'
 import styled from "styled-components"
 import TweetDiv from '../components/TweetDiv'
 import Select, { StylesConfig } from "react-select"
 import annotations from "../lib/twitter/contextAnnotations"
+import { useFilterContext } from '../providers/FilterContext'
 const twitter = new TweetsApi()
 
 
@@ -162,7 +163,7 @@ const TimelineFilterCreateModalClose = styled.div`
 `
 
 
-const SelectContainer = styled.div`
+const TimelineFilterCreateModalSelectContainer = styled.div`
   width: 500px;
   height: 150px;
   display: flex;
@@ -170,20 +171,49 @@ const SelectContainer = styled.div`
   justify-content: space-evenly;
 `
 
-interface IFilter {
-  userNames: Array<string>;
-  contextAnnotationIds: Array<string>;
-}
+
+const TimelineFilterSave = styled.div`
+  position: absolute;
+  right: 10px;
+  bottom: 30px;
+  margin: 10px 15px;
+  padding: 10px 25px;
+  text-decoration: none;
+  background-color: #1d9bf0;
+  border:0;
+  border-radius: 40px;
+  border-color: white;
+  outline: 0;
+  color: white;
+  font-weight: bold;
+  &:hover {
+  	cursor: pointer;
+  }
+`
+
+const CreateFilterInput = styled.input`
+`
 
 const Dashboard: NextPage = () => {
   const { data: session, status } = useSession();
+  const { addFilter } = useFilterContext()
+
   const [tweets, setTweets] = useState<Array<Tweet>>([])
   const [following, setFollowing] = useState<Array<User>>([])
   const [selectedTimeline, setSelectedTimeline] = useState<string>("Home")
   const [filterModalOpen, setFilterModalOpen] = useState<boolean>(false)
+  const [currentFilterName, setCurrentFilterName] = useState<string>("")
   const [currentSelectedUsersInFilter, setCurrentSelectedUsersInFilter] = useState<Array<string>>([])
   const [currentSelectedCtxAnnotationsInFilter, setCurrentSelectedCtxAnnotationsInFilter] = useState<Array<string>>([])
   
+  const handleFilterSave = useCallback(() => {
+    addFilter({
+      name: currentFilterName, 
+      userNames: currentSelectedUsersInFilter,
+      contextAnnotationIds: currentSelectedCtxAnnotationsInFilter
+    })
+    setFilterModalOpen(false)
+  }, [currentFilterName, currentSelectedUsersInFilter, currentSelectedCtxAnnotationsInFilter])
 
   console.log(status)
 
@@ -191,25 +221,14 @@ const Dashboard: NextPage = () => {
     if (session) {
       fetch("/api/twitter/tweets/timeline").then(async t => {
         const res = (await t.json());
-        console.log("tweets",res)
         setTweets(res.tweets || [])
       }).catch(console.error)
       fetch("/api/twitter/user/following").then(async u => {
         const res = (await u.json());
-        console.log("users", res)
         setFollowing(res.users || [])
       }).catch(console.error)
     }
   }, [session])
-
-
-  useEffect(() => {
-    if (filterModalOpen) {
-
-    } else {
-
-    }
-  }, [filterModalOpen])
 
   return <>
     {/* <Header>
@@ -254,7 +273,8 @@ const Dashboard: NextPage = () => {
   <TimelineFilterCreateModal hidden={!filterModalOpen}>
     <TimelineFilterCreateModalContent>
       <TimelineFilterCreateModalClose onClick={() => setFilterModalOpen(false)}>X</TimelineFilterCreateModalClose>
-      <SelectContainer>
+      <TimelineFilterCreateModalSelectContainer>
+        <CreateFilterInput onChange={(e) => setCurrentFilterName(e.target.value)} placeholder="Filter name"/>
         <Select
           isMulti
           name="following"
@@ -277,8 +297,9 @@ const Dashboard: NextPage = () => {
             setCurrentSelectedCtxAnnotationsInFilter(newV.map(v => v.value));
           }}
         />
-      </SelectContainer>
-          </TimelineFilterCreateModalContent>
+        <TimelineFilterSave onClick={handleFilterSave}>Save Filter</TimelineFilterSave>
+      </TimelineFilterCreateModalSelectContainer>
+    </TimelineFilterCreateModalContent>
   </TimelineFilterCreateModal>
   </>
 
