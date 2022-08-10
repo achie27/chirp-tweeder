@@ -10,6 +10,10 @@ export const authOptions: NextAuthOptions = {
       clientId: process.env.TWITTER_ID as string,
       clientSecret: process.env.TWITTER_SECRET as string,
       version: "2.0",
+      authorization: {
+        url: "https://twitter.com/i/oauth2/authorize",
+        params: { scope: "users.read follows.read tweet.read offline.access" }
+      }
     })
   ],
   debug: true,

@@ -4,11 +4,13 @@ import Image from 'next/image'
 import { useSession, signIn, signOut } from "next-auth/react"
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import { Tweet, TweetsApi } from '../lib/twitter'
+import { Tweet, TweetsApi, User, UsersIdFollowingUserFieldsEnum } from '../lib/twitter'
 import styled from "styled-components"
 import TweetDiv from '../components/TweetDiv'
-
+import Select, { StylesConfig } from "react-select"
+import annotations from "../lib/twitter/contextAnnotations"
 const twitter = new TweetsApi()
+
 
 const Header = styled.div`
   background-color: rgba(0, 0, 0, 0.65);
@@ -131,6 +133,7 @@ const TimelineFilterCreateModal = styled.div`
   width: 100vw;
   height: 100vh;
   background-color: rgba(91, 112, 131, 0.4);
+  z-index: 2;
 `
 
 
@@ -158,17 +161,44 @@ const TimelineFilterCreateModalClose = styled.div`
   }
 `
 
+
+const SelectContainer = styled.div`
+  width: 500px;
+  height: 150px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+`
+
+interface IFilter {
+  userNames: Array<string>;
+  contextAnnotationIds: Array<string>;
+}
+
 const Dashboard: NextPage = () => {
   const { data: session, status } = useSession();
   const [tweets, setTweets] = useState<Array<Tweet>>([])
+  const [following, setFollowing] = useState<Array<User>>([])
   const [selectedTimeline, setSelectedTimeline] = useState<string>("Home")
   const [filterModalOpen, setFilterModalOpen] = useState<boolean>(false)
+  const [currentSelectedUsersInFilter, setCurrentSelectedUsersInFilter] = useState<Array<string>>([])
+  const [currentSelectedCtxAnnotationsInFilter, setCurrentSelectedCtxAnnotationsInFilter] = useState<Array<string>>([])
+  
 
   console.log(status)
 
   useEffect(() => {
     if (session) {
-      fetch("/api/twitter/timeline").then(async t => setTweets((await t.json()).tweets)).catch(console.error)
+      fetch("/api/twitter/tweets/timeline").then(async t => {
+        const res = (await t.json());
+        console.log("tweets",res)
+        setTweets(res.tweets || [])
+      }).catch(console.error)
+      fetch("/api/twitter/user/following").then(async u => {
+        const res = (await u.json());
+        console.log("users", res)
+        setFollowing(res.users || [])
+      }).catch(console.error)
     }
   }, [session])
 
@@ -224,8 +254,31 @@ const Dashboard: NextPage = () => {
   <TimelineFilterCreateModal hidden={!filterModalOpen}>
     <TimelineFilterCreateModalContent>
       <TimelineFilterCreateModalClose onClick={() => setFilterModalOpen(false)}>X</TimelineFilterCreateModalClose>
-        You've been modaled
-      </TimelineFilterCreateModalContent>
+      <SelectContainer>
+        <Select
+          isMulti
+          name="following"
+          options={following.map(f => ({ label: f.username, value: f.id }))}
+          className="basic-multi-select"
+          classNamePrefix="select"
+          closeMenuOnSelect={false}
+          onChange={(newV) => {
+            setCurrentSelectedUsersInFilter(newV.map(v => v.value));
+          }}
+        />
+        <Select
+          isMulti
+          name="ctxAnnotation"
+          options={annotations.map(f => ({ label: f.name, value: f.id }))}
+          className="basic-multi-select"
+          classNamePrefix="select"
+          closeMenuOnSelect={false}
+          onChange={(newV) => {
+            setCurrentSelectedCtxAnnotationsInFilter(newV.map(v => v.value));
+          }}
+        />
+      </SelectContainer>
+          </TimelineFilterCreateModalContent>
   </TimelineFilterCreateModal>
   </>
 
