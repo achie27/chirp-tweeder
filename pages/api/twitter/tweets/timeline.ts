@@ -10,14 +10,20 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  if (req.method?.toUpperCase() !== "GET") {
+    return res.status(400).end();
+  }
+
   const session = await unstable_getServerSession(req, res, authOptions)
   if (!session) {
     return res.status(200).json({ tweets: [] })
   }
 
   try {
+    const paginationToken = String(req.query.pagination_token || "");
+
     const d = await twitter.usersIdTimeline({ 
-      id: session?.id as string, 
+      id: session.id as string, 
       tweetFields: new Set([
         UsersIdTweetsTweetFieldsEnum.Id, 
         UsersIdTweetsTweetFieldsEnum.AuthorId,
@@ -29,12 +35,13 @@ export default async function handler(
       ]),
       expansions: new Set([
         UsersIdTweetsExpansionsEnum.ReferencedTweetsId
-      ])
+      ]),
+      ...(paginationToken && { paginationToken })
     },{ 
-      headers: { "Authorization": "Bearer " + session?.accessToken }
+      headers: { "Authorization": "Bearer " + session.accessToken }
     })
   
-    res.status(200).json({ tweets: d.data })
+    res.status(200).json(d)
 
   } catch (e) {
     console.error(e)

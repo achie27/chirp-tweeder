@@ -10,14 +10,24 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  if (req.method?.toUpperCase() !== "GET") {
+    return res.status(400).end();
+  }
+
   const session = await unstable_getServerSession(req, res, authOptions)
   if (!session) {
     return res.status(200).json({ users: [] })
   }
   try {
-    const d = await twitter.usersIdFollowing({ id: session?.id as string }, { headers: { "Authorization": "Bearer " + session?.accessToken }})
+    const paginationToken = String(req.query.pagination_token || "");
+    const d = await twitter.usersIdFollowing({
+      id: session.id as string,
+      ...(paginationToken && { paginationToken })
+    }, { 
+      headers: { "Authorization": "Bearer " + session.accessToken 
+    }})
   
-    res.status(200).json({ users: d.data })
+    res.status(200).json(d)
 
   } catch (e) {
     console.error(e)

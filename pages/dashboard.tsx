@@ -10,6 +10,7 @@ import TweetDiv from '../components/TweetDiv'
 import Select, { StylesConfig } from "react-select"
 import annotations from "../lib/twitter/contextAnnotations"
 import { useFilterContext } from '../providers/FilterContext'
+import { useTwitterContext } from '../providers/TwitterContext'
 const twitter = new TweetsApi()
 
 
@@ -200,17 +201,22 @@ const CreateFilterInput = styled.input`
 `
 
 const Dashboard: NextPage = () => {
-  const { data: session, status } = useSession();
   const { addFilter, filterUserCtxAnnotationMap, savedFilters } = useFilterContext()
+  const { loginStatus, timeline, pollingTimeline, pollTimeline, fetchFollowing } = useTwitterContext()
 
-  const [tweets, setTweets] = useState<Array<Tweet>>([])
   const [following, setFollowing] = useState<Array<User>>([])
   const [selectedTimeline, setSelectedTimeline] = useState<string>("Home")
   const [filterModalOpen, setFilterModalOpen] = useState<boolean>(false)
   const [currentFilterName, setCurrentFilterName] = useState<string>("")
   const [currentSelectedUsersInFilter, setCurrentSelectedUsersInFilter] = useState<Array<string>>([])
   const [currentSelectedCtxAnnotationsInFilter, setCurrentSelectedCtxAnnotationsInFilter] = useState<Array<string>>([])
-  
+
+  useEffect(() => {
+    if (!pollingTimeline)
+      pollTimeline();
+    fetchFollowing().then(setFollowing).catch(console.error)
+  }, [loginStatus])
+
   const handleFilterSave = useCallback(() => {
     addFilter({
       name: currentFilterName, 
@@ -232,18 +238,6 @@ const Dashboard: NextPage = () => {
     return false;
   }, [filterUserCtxAnnotationMap, selectedTimeline]);
 
-  useEffect(() => {
-    if (session) {
-      fetch("/api/twitter/tweets/timeline").then(async t => {
-        const res = (await t.json());
-        setTweets(res.tweets || [])
-      }).catch(console.error)
-      fetch("/api/twitter/user/following").then(async u => {
-        const res = (await u.json());
-        setFollowing(res.users || [])
-      }).catch(console.error)
-    }
-  }, [session])
 
   return <>
     {/* <Header>
@@ -273,7 +267,7 @@ const Dashboard: NextPage = () => {
         </SelectedTimeline>
       </Header>
       <TimelineTweets>
-      { tweets.filter(t => !tweedTheTweet(t)).map(tweet => (<TweetDiv text={tweet.text} id={tweet.id}/>)) }
+      { timeline.filter(t => !tweedTheTweet(t)).map(tweet => (<TweetDiv text={tweet.text} id={tweet.id}/>)) }
       </TimelineTweets>
     </TimelineTweetsWrapper>
     <TimelineFilterWrapper>
