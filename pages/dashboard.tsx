@@ -87,6 +87,11 @@ const Timelines = styled.div`
   width: inherit;
 
 `
+
+const TimelinesListItem = styled.div`
+  width: inherit;
+`
+
 const TimelineTweetsWrapper = styled.div`
   width: 40%;
   background-color: blue;
@@ -196,7 +201,7 @@ const CreateFilterInput = styled.input`
 
 const Dashboard: NextPage = () => {
   const { data: session, status } = useSession();
-  const { addFilter } = useFilterContext()
+  const { addFilter, filterUserCtxAnnotationMap, savedFilters } = useFilterContext()
 
   const [tweets, setTweets] = useState<Array<Tweet>>([])
   const [following, setFollowing] = useState<Array<User>>([])
@@ -215,7 +220,17 @@ const Dashboard: NextPage = () => {
     setFilterModalOpen(false)
   }, [currentFilterName, currentSelectedUsersInFilter, currentSelectedCtxAnnotationsInFilter])
 
-  console.log(status)
+  const tweedTheTweet = useCallback((tweet: Tweet) => {
+    if(
+      tweet.contextAnnotations?.some(ca => filterUserCtxAnnotationMap[selectedTimeline]?.[tweet.authorId!]?.[ca.domain.id])
+    ) {
+      // TWEED
+      return true
+    }
+
+    // don't tweed
+    return false;
+  }, [filterUserCtxAnnotationMap, selectedTimeline]);
 
   useEffect(() => {
     if (session) {
@@ -246,7 +261,10 @@ const Dashboard: NextPage = () => {
 
   <Main>
     <TimelinesWrapper>
-      <Timelines></Timelines>
+      <Timelines>
+        <TimelinesListItem onClick={() => setSelectedTimeline("Home")}>Home</TimelinesListItem>
+        { savedFilters.map(f => <TimelinesListItem key={f.name} onClick={() => setSelectedTimeline(f.name)} >{f.name}</TimelinesListItem>) }
+      </Timelines>
     </TimelinesWrapper>
     <TimelineTweetsWrapper>
       <Header>
@@ -255,7 +273,7 @@ const Dashboard: NextPage = () => {
         </SelectedTimeline>
       </Header>
       <TimelineTweets>
-      { tweets.map(tweet => (<TweetDiv text={tweet.text} id={tweet.id}/>)) }
+      { tweets.filter(t => !tweedTheTweet(t)).map(tweet => (<TweetDiv text={tweet.text} id={tweet.id}/>)) }
       </TimelineTweets>
     </TimelineTweetsWrapper>
     <TimelineFilterWrapper>

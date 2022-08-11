@@ -12,7 +12,7 @@ export interface IFilter {
 interface IFilterContext {
   savedFilters: Array<IFilter>;
   addFilter: (f: IFilter) => void;
-  mergedUserCtxAnnotationMap: Record<string, Record<string, boolean>>;
+  filterUserCtxAnnotationMap: Record<string, Record<string, Record<string, boolean>>>;
 }
 
 
@@ -21,14 +21,14 @@ const filterContext = createContext<IFilterContext>({
   addFilter: () => {
     throw new Error("Too soon");
   },
-  mergedUserCtxAnnotationMap: {}
+  filterUserCtxAnnotationMap: {}
 });
 
 export const FilterContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
 
   const [savedFilters, setSavedFilters] = useState<Array<IFilter>>([]);
   const [initialFilterLoadDone, setInitialFilterLoadDone] = useState<boolean>(false);
-  const [mergedUserCtxAnnotationMap, setMergedUserCtxAnnotationMap] = useState<IFilterContext["mergedUserCtxAnnotationMap"]>({});
+  const [filterUserCtxAnnotationMap, setFilterUserCtxAnnotationMap] = useState<IFilterContext["filterUserCtxAnnotationMap"]>({});
 
   useEffect(() => {
     if (!initialFilterLoadDone) {
@@ -43,15 +43,17 @@ export const FilterContextProvider: FC<{ children: ReactNode }> = ({ children })
       console.log("saving savedFilters as", savedFilters)
       setLocalStorageItem({key: "tweeder.savedFilters", value: savedFilters});
     }
-    setMergedUserCtxAnnotationMap(savedFilters.reduce((acc, cur) => {
+    setFilterUserCtxAnnotationMap(savedFilters.reduce((acc, cur) => {
+      if (!acc[cur.name]) acc[cur.name] = {};
+
       cur.userNames.forEach(u => {
-        if (!acc[u]) acc[u] = {};
+        if (!acc[cur.name][u]) acc[cur.name][u] = {};
         cur.contextAnnotationIds.forEach(ca => {
-          acc[u][ca] = true;
+          acc[cur.name][u][ca] = true;
         })
       })
       return acc;
-    }, {} as IFilterContext["mergedUserCtxAnnotationMap"])); 
+    }, {} as IFilterContext["filterUserCtxAnnotationMap"])); 
   }, [savedFilters]);
 
   const addFilter = useCallback((newFilter: IFilter) => {
@@ -63,7 +65,7 @@ export const FilterContextProvider: FC<{ children: ReactNode }> = ({ children })
       value={{
         savedFilters,
         addFilter,
-        mergedUserCtxAnnotationMap
+        filterUserCtxAnnotationMap
       }}
     >
       {children}
