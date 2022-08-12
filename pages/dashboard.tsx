@@ -11,6 +11,7 @@ import Select, { StylesConfig } from "react-select"
 import annotations from "../lib/twitter/contextAnnotations"
 import { useFilterContext } from '../providers/FilterContext'
 import { useTwitterContext } from '../providers/TwitterContext'
+import InfiniteTweetScroll from '../components/InfiniteTweetScroll'
 const twitter = new TweetsApi()
 
 
@@ -202,7 +203,7 @@ const CreateFilterInput = styled.input`
 
 const Dashboard: NextPage = () => {
   const { addFilter, filterUserCtxAnnotationMap, savedFilters } = useFilterContext()
-  const { loginStatus, timeline, pollingTimeline, pollTimeline, fetchFollowing } = useTwitterContext()
+  const { loginStatus, timeline, pollingTimeline, pollTimeline, fetchFollowing, timelineHasMoreTweets } = useTwitterContext()
 
   const [following, setFollowing] = useState<Array<User>>([])
   const [selectedTimeline, setSelectedTimeline] = useState<string>("Home")
@@ -267,7 +268,8 @@ const Dashboard: NextPage = () => {
         </SelectedTimeline>
       </Header>
       <TimelineTweets>
-      { timeline.filter(t => !tweedTheTweet(t)).map(tweet => (<TweetDiv text={tweet.text} id={tweet.id}/>)) }
+      {/* { timeline.filter(t => !tweedTheTweet(t)).map(tweet => (<TweetDiv text={tweet.text} id={tweet.id}/>)) } */}
+      <InfiniteTweetScroll tweets={timeline} hasMoreTweetsToFetch={timelineHasMoreTweets} isFetchingTweets={pollingTimeline} pollNextTweetSet={pollTimeline} />
       </TimelineTweets>
     </TimelineTweetsWrapper>
     <TimelineFilterWrapper>

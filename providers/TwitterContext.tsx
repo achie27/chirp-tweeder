@@ -11,8 +11,8 @@ interface ITwitterContext {
   userName?: string;
   profileImage?: string;
   timeline: Array<Tweet>;
-  pollingTimeline?: boolean;
-  timelineHasMoreTweets?: boolean;
+  pollingTimeline: boolean;
+  timelineHasMoreTweets: boolean;
   pollTimeline: () => Promise<void>;
   fetchFollowing: () => Promise<Array<User>>
 }
@@ -25,7 +25,9 @@ const twitterContext = createContext<ITwitterContext>({
   fetchFollowing: () => {
     throw new Error("too soon")
   },
-  timeline: []
+  timeline: [],
+  timelineHasMoreTweets: true,
+  pollingTimeline: false,
 });
 
 export const TwitterContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
