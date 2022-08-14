@@ -26,6 +26,19 @@ const Header = styled.div`
   z-index: 1;
   `
 
+
+const FilterButtonCreator = styled.div`
+  background-color: rgba(0, 0, 0, 0.65);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  height: 60px;
+  position: fixed;
+  top: 0px;
+  z-index: 1;
+  width: inherit;
+`
+
 const SelectedTimeline = styled.div`
   float: left;
   width: 25%;
@@ -98,7 +111,6 @@ const TimelineTweetsWrapper = styled.div`
   width: 40%;
   background-color: blue;
   position: relative;
-  height: 100vh
 
   ` 
   const TimelineTweets = styled.div`
@@ -276,12 +288,12 @@ const Dashboard: NextPage = () => {
     </TimelineTweetsWrapper>
     <TimelineFilterWrapper>
       {/* TODO:remove Header from here */}
-      <Header>
+      <FilterButtonCreator>
         <TimelineFilterCreate onClick={() => {
           console.log(filterModalOpen); 
           setFilterModalOpen(true)
         }}>Create a filter</TimelineFilterCreate>
-      </Header>
+      </FilterButtonCreator>
       <TimelineFilter>
       </TimelineFilter>
     </TimelineFilterWrapper>
