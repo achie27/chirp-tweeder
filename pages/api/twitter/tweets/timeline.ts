@@ -1,7 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { unstable_getServerSession } from 'next-auth'
-import { Tweet, TweetsApi, UsersIdTweetsExpansionsEnum, UsersIdTweetsTweetFieldsEnum } from '../../../../lib/twitter'
+import { Tweet, TweetsApi, UsersIdTweetsExpansionsEnum, UsersIdTweetsTweetFieldsEnum, UsersIdTweetsUserFieldsEnum } from '../../../../lib/twitter'
 import { authOptions } from "../../auth/[...nextauth]"
 
 const twitter = new TweetsApi()
@@ -31,10 +31,19 @@ export default async function handler(
         UsersIdTweetsTweetFieldsEnum.InReplyToUserId,
         UsersIdTweetsTweetFieldsEnum.ReferencedTweets,
         UsersIdTweetsTweetFieldsEnum.Source,
-        UsersIdTweetsTweetFieldsEnum.ConversationId
+        UsersIdTweetsTweetFieldsEnum.ConversationId,
+        UsersIdTweetsTweetFieldsEnum.Entities,
+        UsersIdTweetsTweetFieldsEnum.InReplyToUserId,
+      ]),
+      userFields: new Set([
+        UsersIdTweetsUserFieldsEnum.ProfileImageUrl,
+        UsersIdTweetsUserFieldsEnum.Name,
+        UsersIdTweetsUserFieldsEnum.Username,
+
       ]),
       expansions: new Set([
-        UsersIdTweetsExpansionsEnum.ReferencedTweetsId
+        UsersIdTweetsExpansionsEnum.ReferencedTweetsId,
+        UsersIdTweetsExpansionsEnum.AuthorId,
       ]),
       ...(paginationToken && { paginationToken })
     },{ 

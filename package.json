@@ -11,14 +11,21 @@
   "dependencies": {
     "@tanstack/react-query": "^4.0.10",
     "@tanstack/react-virtual": "^3.0.0-beta.17",
+    "@types/twemoji": "^13.1.2",
+    "@types/twitter-text": "^3.1.2",
     "axios": "^0.27.2",
     "next": "12.2.3",
     "next-auth": "^4.10.3",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-select": "^5.4.0",
+    "react-static-tweets": "^0.8.0",
+    "react-tweet": "^1.7.1",
     "react-twitter-widgets": "^1.11.0",
-    "styled-components": "^5.3.5"
+    "react-video-wrapper": "^1.0.3",
+    "styled-components": "^5.3.5",
+    "twemoji": "^14.0.2",
+    "twitter-text": "^3.1.0"
   },
   "devDependencies": {
     "@openapitools/openapi-generator-cli": "^2.5.1",

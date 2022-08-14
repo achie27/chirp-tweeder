@@ -15,7 +15,7 @@ const Home: NextPage = () => {
   switch (loginStatus) {
     case "authenticated":
       router.push("/dashboard");
-      break;
+      return <></>;
     case "loading":
       loginSpace = <>Checking your session</>
       break

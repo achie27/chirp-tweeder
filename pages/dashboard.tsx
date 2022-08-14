@@ -3,7 +3,7 @@ import Head from 'next/head'
 import Image from 'next/image'
 import { useSession, signIn, signOut } from "next-auth/react"
 import { useRouter } from 'next/router'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Tweet, TweetsApi, User, UsersIdFollowingUserFieldsEnum } from '../lib/twitter'
 import styled from "styled-components"
 import TweetDiv from '../components/TweetDiv'
@@ -12,7 +12,7 @@ import annotations from "../lib/twitter/contextAnnotations"
 import { useFilterContext } from '../providers/FilterContext'
 import { useTwitterContext } from '../providers/TwitterContext'
 import InfiniteTweetScroll from '../components/InfiniteTweetScroll'
-const twitter = new TweetsApi()
+import {Tweet as TweetEmbed} from "react-twitter-widgets"
 
 
 const Header = styled.div`
@@ -98,11 +98,13 @@ const TimelineTweetsWrapper = styled.div`
   width: 40%;
   background-color: blue;
   position: relative;
+  height: 100vh
 
   ` 
   const TimelineTweets = styled.div`
   position: relative;
-
+  height: inherit;
+  overflow: auto;
   ` 
 
 const TimelineFilterWrapper = styled.div`
@@ -213,9 +215,10 @@ const Dashboard: NextPage = () => {
   const [currentSelectedCtxAnnotationsInFilter, setCurrentSelectedCtxAnnotationsInFilter] = useState<Array<string>>([])
 
   useEffect(() => {
-    if (!pollingTimeline)
-      pollTimeline();
-    fetchFollowing().then(setFollowing).catch(console.error)
+    if (loginStatus === "authenticated") {
+      if (!pollingTimeline) pollTimeline();
+      fetchFollowing().then(setFollowing).catch(console.error)
+    }
   }, [loginStatus])
 
   const handleFilterSave = useCallback(() => {
@@ -239,7 +242,7 @@ const Dashboard: NextPage = () => {
     return false;
   }, [filterUserCtxAnnotationMap, selectedTimeline]);
 
-
+  const parentRef = useRef(null)
   return <>
     {/* <Header>
       <SelectedTimeline>
@@ -267,9 +270,9 @@ const Dashboard: NextPage = () => {
           <SelectedTimelineText>{selectedTimeline}</SelectedTimelineText>
         </SelectedTimeline>
       </Header>
-      <TimelineTweets>
-      {/* { timeline.filter(t => !tweedTheTweet(t)).map(tweet => (<TweetDiv text={tweet.text} id={tweet.id}/>)) } */}
-      <InfiniteTweetScroll tweets={timeline} hasMoreTweetsToFetch={timelineHasMoreTweets} isFetchingTweets={pollingTimeline} pollNextTweetSet={pollTimeline} />
+      <TimelineTweets ref={parentRef}>
+      { timeline.filter(t => !tweedTheTweet(t)).map(tweet => (<TweetDiv tweetData={tweet} userData={{} as any}/>)) }
+      {/* <InfiniteTweetScroll parentRef={parentRef} tweets={timeline.filter(t => !tweedTheTweet(t))} hasMoreTweetsToFetch={timelineHasMoreTweets} isFetchingTweets={pollingTimeline} pollNextTweetSet={pollTimeline} /> */}
       </TimelineTweets>
     </TimelineTweetsWrapper>
     <TimelineFilterWrapper>

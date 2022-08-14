@@ -26,7 +26,7 @@ const twitterContext = createContext<ITwitterContext>({
     throw new Error("too soon")
   },
   timeline: [],
-  timelineHasMoreTweets: true,
+  timelineHasMoreTweets: false,
   pollingTimeline: false,
 });
 
@@ -40,6 +40,7 @@ export const TwitterContextProvider: FC<{ children: ReactNode }> = ({ children }
   const [timeline, setTimeline] = useState<Array<Tweet>>([]);
   const [pollingTimeline, setPollingTimeline] = useState<boolean>(false);
   const [nextPaginationToken, setNextPaginationToken] = useState<string>("");
+  const [timelineHasMoreTweets, setTimelineHasMoreTweets] = useState<boolean>(false);
 
   useEffect(() => {
     if (loginStatus === "authenticated") {
@@ -57,6 +58,7 @@ export const TwitterContextProvider: FC<{ children: ReactNode }> = ({ children }
      
       setTimeline(timeline.concat(data.data || []));
       setNextPaginationToken(data.meta?.nextToken || "");
+      setTimelineHasMoreTweets(nextPaginationToken.length > 0)
     } catch(e) {
       // TODO: handle this someday
       console.error(e)
@@ -89,7 +91,7 @@ export const TwitterContextProvider: FC<{ children: ReactNode }> = ({ children }
         userName, 
         profileImage,
         timeline,
-        timelineHasMoreTweets: nextPaginationToken.length > 0,
+        timelineHasMoreTweets,
         pollingTimeline,
         pollTimeline,
         fetchFollowing

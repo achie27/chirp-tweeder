@@ -1,4 +1,5 @@
 import '../styles/globals.css'
+import 'react-static-tweets/styles.css'
 import { SessionProvider } from "next-auth/react"
 
 import type { AppProps } from 'next/app'
