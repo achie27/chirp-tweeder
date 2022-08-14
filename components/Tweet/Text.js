@@ -19,7 +19,7 @@ class Text extends React.Component {
     // remove any quote links
     if (entities && data.quoted_status) {
       entities.urls.forEach( u => {
-        if (u.expanded_url.indexOf('/status/') > -1) {
+        if (u.expandedUrl.indexOf('/status/') > -1) {
           text = text.replace(u.url, '')
         }
       })
@@ -38,7 +38,7 @@ class Text extends React.Component {
     // remove any extended entities links
     if (extended_entities && extended_entities.media) {
       extended_entities.media.forEach(e => {
-        text = text.replace(e.display_url, '')
+        text = text.replace(e.displayUrl, '')
       })
     }
 

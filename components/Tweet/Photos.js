@@ -8,10 +8,6 @@ class Photos extends React.Component {
     super(props, context)
   }
 
-  onClick (idx) {
-    this.context.toggleModal(idx)
-  }
-
   render () {
     let {media} = this.props
 
@@ -25,7 +21,7 @@ class Photos extends React.Component {
       // set initial sizes / styles
       let containStyle = {'width': '100%', 'position': 'relative', 'overflow': 'hidden'}
       let photoStyle = {'width': '100%', 'position': 'relative', 'verticalAlign': 'bottom'}
-      let mediaHeight = m.sizes.large.h, mediaWidth = m.sizes.large.w
+      let mediaHeight = m.height, mediaWidth = m.width
 
       /*
        * format single photo
@@ -41,11 +37,11 @@ class Photos extends React.Component {
 
         // check if image is taller than maxHeight, if so
         // center it with a negative top value
-        const maxHeight = parseInt(mediaStyle.maxHeight.replace('px', ''))
+      //   const maxHeight = parseInt(mediaStyle.maxHeight.replace('px', ''))
 
-        if (mediaHeight > maxHeight) {
-          photoStyle.top = `${(maxHeight - mediaHeight) / 2}px`
-        }
+      //   if (mediaHeight > maxHeight) {
+      //     photoStyle.top = `${(maxHeight - mediaHeight) / 2}px`
+      //   }
       }
 
       /*
@@ -65,11 +61,11 @@ class Photos extends React.Component {
         mediaHeight = mediaHeight * (ratio / 100)
 
         if (mediaHeight > maxHeight) {
-          photoStyle.top = `${(maxHeight - mediaHeight) / 2}px`
+          // photoStyle.top = `${(maxHeight - mediaHeight) / 2}px`
           photoStyle.width = '100%'
           photoStyle.height = 'auto'
         } else if (mediaWidth > (508 / 2)) {
-          const ratio = (100 / m.sizes.large.h) * 253
+          const ratio = (100 / m.height) * 253
           mediaWidth = mediaWidth * (ratio / 100)
           photoStyle.left = `${((508 / 2) - mediaWidth) / 2}px`
         }
@@ -90,11 +86,11 @@ class Photos extends React.Component {
           const ratio = (100 / mediaHeight) * 337
           mediaWidth = mediaWidth * (ratio / 100)
 
-          const newRatio = (100 / m.sizes.medium.w) * firstWrapWidth
+          const newRatio = (100 / m.width) * firstWrapWidth
           mediaHeight = mediaHeight * (newRatio / 100)
 
           if (mediaHeight > maxHeight) {
-            photoStyle.top = `${(maxHeight - mediaHeight) / 2}px`
+            // photoStyle.top = `${(maxHeight - mediaHeight) / 2}px`
           }
 
           if (mediaWidth > firstWrapWidth) {
@@ -104,8 +100,8 @@ class Photos extends React.Component {
           }
         }
         if (i !== 0) {
-          mediaHeight = m.sizes.medium.h
-          mediaWidth = m.sizes.medium.w
+          mediaHeight = m.height
+          mediaWidth = m.width
           const maxHeight = 337 / 2
           const maxWidth = 508 * 1/3
 
@@ -113,11 +109,11 @@ class Photos extends React.Component {
           mediaHeight = mediaHeight * (ratio / 100)
 
           if (mediaHeight > maxHeight) {
-            photoStyle.top = `${(maxHeight - mediaHeight) / 2}px`
+            // photoStyle.top = `${(maxHeight - mediaHeight) / 2}px`
           } else if (mediaWidth > maxWidth) {
             photoStyle.width = 'auto'
             photoStyle.height = '100%'
-            const newRatio = (100 / m.sizes.medium.h) * maxWidth
+            const newRatio = (100 / m.height) * maxWidth
             mediaWidth = mediaWidth * (newRatio / 100)
             photoStyle.left = `${(maxWidth - mediaWidth) / 2}px`
           }
@@ -144,12 +140,12 @@ class Photos extends React.Component {
           const ratio = (100 / mediaHeight) * 380
           mediaWidth = mediaWidth * (ratio / 100)
 
-          const newRatio = (100 / m.sizes.medium.w) * firstWrapWidth
+          const newRatio = (100 / m.width) * firstWrapWidth
           mediaHeight = mediaHeight * (newRatio / 100)
 
 
           if (mediaHeight > maxHeight) {
-            photoStyle.top = `${(maxHeight - mediaHeight) / 2}px`
+            // photoStyle.top = `${(maxHeight - mediaHeight) / 2}px`
           }
 
           if (mediaWidth > firstWrapWidth) {
@@ -159,8 +155,8 @@ class Photos extends React.Component {
           }
         }
         if (i !== 0) {
-          mediaHeight = m.sizes.medium.h
-          mediaWidth = m.sizes.medium.w
+          mediaHeight = m.height
+          mediaWidth = m.width
           const maxHeight = 380 / 3
           const maxWidth = 508 * 1/4
 
@@ -168,11 +164,11 @@ class Photos extends React.Component {
           mediaHeight = mediaHeight * (ratio / 100)
 
           if (mediaHeight > maxHeight) {
-            photoStyle.top = `${(maxHeight - mediaHeight) / 2}px`
+            // photoStyle.top = `${(maxHeight - mediaHeight) / 2}px`
           } else if (mediaWidth > maxWidth) {
             photoStyle.width = 'auto'
             photoStyle.height = '100%'
-            const newRatio = (100 / m.sizes.medium.h) * maxWidth
+            const newRatio = (100 / m.height) * maxWidth
             mediaWidth = mediaWidth * (newRatio / 100)
             photoStyle.left = `${(maxWidth - mediaWidth) / 2}px`
           }
@@ -186,12 +182,14 @@ class Photos extends React.Component {
 
 
       mediaElements.push(
-        <div onClick={this.onClick.bind(this, i)} className="AdaptiveMedia-photoContainer" style={containStyle} key={i}>
-          <img src={m.media_url} style={photoStyle} />
+        <div className="AdaptiveMedia-photoContainer" style={containStyle} key={i}>
+          <img src={m.url} style={photoStyle} />
         </div>
       )
     })
     // end media loop
+
+    console.log(mediaElements);
 
     return (
       <div className="AdaptiveMedia" style={mediaStyle}>
@@ -199,10 +197,6 @@ class Photos extends React.Component {
       </div>
     )
   }
-}
-
-Photos.contextTypes = {
-  'toggleModal': PropTypes.func
 }
 
 Photos.propTypes = {

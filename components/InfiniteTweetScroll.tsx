@@ -2,7 +2,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import React, { FC, MutableRefObject, ReactNode, useEffect, useRef } from "react";
 import styled from "styled-components";
-import { useTwitterContext } from "../providers/TwitterContext";
+import { ITweetWithExpansions, useTwitterContext } from "../providers/TwitterContext";
 import { useVirtualizer } from '@tanstack/react-virtual'
 import { Tweet } from "../lib/twitter";
 // import { Tweet as TweetEmbed } from "react-twitter-widgets"
@@ -10,6 +10,7 @@ import { Tweet as TweetEmbed } from 'react-static-tweets'
 
 // @ts-ignore
 import TweetWidget from "react-tweet";
+import TweetDiv from "./TweetDiv";
 
 const Container = styled.div`
   width: inherit;
@@ -17,19 +18,19 @@ const Container = styled.div`
 `
 
 interface IInfiniteTweetScrollProps {
-  tweets: Array<Tweet>;
+  timeline: Array<ITweetWithExpansions>;
   isFetchingTweets: boolean;
   hasMoreTweetsToFetch: boolean;
   pollNextTweetSet: () => Promise<void>;
   parentRef: MutableRefObject<null>
 };
 
-const InfiniteTweetScroll: FC<IInfiniteTweetScrollProps> = ({ tweets, hasMoreTweetsToFetch, isFetchingTweets, pollNextTweetSet, parentRef }) => {
+const InfiniteTweetScroll: FC<IInfiniteTweetScrollProps> = ({ timeline, hasMoreTweetsToFetch, isFetchingTweets, pollNextTweetSet, parentRef }) => {
   const rowVirtualizer = useVirtualizer({
-    count: tweets.length,
+    count: timeline.length,
     getScrollElement: () => parentRef.current,
     estimateSize: () => 700,
-    // overscan: 2,
+    overscan: 5,
   });
 
   // useEffect(() => {
@@ -109,7 +110,7 @@ const InfiniteTweetScroll: FC<IInfiniteTweetScrollProps> = ({ tweets, hasMoreTwe
         }}
       >
         {rowVirtualizer.getVirtualItems().map((virtualRow) => {
-          const tweet = tweets[virtualRow.index];
+          const tweet = timeline[virtualRow.index];
           return <div
             key={virtualRow.index}
             ref={virtualRow.measureElement}
@@ -122,7 +123,7 @@ const InfiniteTweetScroll: FC<IInfiniteTweetScrollProps> = ({ tweets, hasMoreTwe
               transform: `translateY(${virtualRow.start}px)`,
             }}
           >
-            <TweetEmbed id={tweet.id} />
+            <TweetDiv tweetData={tweet.tweet} includesData={tweet.includes} />
           </div>
         })}
       </div>

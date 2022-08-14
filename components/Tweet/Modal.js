@@ -83,22 +83,22 @@ class Modal extends React.Component {
       'background': 'white',
     }
 
-    const w = media.sizes.large.w;
-    const h = media.sizes.large.h;
+    const w = media.width;
+    const h = media.height;
 
     if (w > 1000) {
       if (h > 650) {
-        imgStyle.width, modalWrap.width = `${(media.sizes.large.w / media.sizes.large.h) * 650}px`
+        imgStyle.width, modalWrap.width = `${(media.width / media.height) * 650}px`
       } 
       else {
-        modalWrap.width = `${(media.sizes.large.w / media.sizes.large.h) * 650}px`
-        imgStyle.height = `${(media.sizes.large.h / media.sizes.large.w) * 1000}px`
+        modalWrap.width = `${(media.width / media.height) * 650}px`
+        imgStyle.height = `${(media.height / media.width) * 1000}px`
       }
     }
     else {
       if (h > 650) {
-        modalWrap.width = `${(media.sizes.large.w / media.sizes.large.h) * 650}px`
-        imgStyle.width = `${(media.sizes.large.w / media.sizes.large.h) * 650}px`
+        modalWrap.width = `${(media.width / media.height) * 650}px`
+        imgStyle.width = `${(media.width / media.height) * 650}px`
       }
       else {
         modalWrap.width = `${w}px`

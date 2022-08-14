@@ -1,7 +1,12 @@
 import { Session } from "next-auth";
 import { SessionContextValue, useSession } from "next-auth/react";
 import { createContext, FC, ReactNode, useCallback, useContext, useEffect, useState } from "react"
-import { Get2UsersIdFollowingResponse, Get2UsersIdTimelinesReverseChronologicalResponse, Tweet, User } from "../lib/twitter";
+import { Expansions, Get2UsersIdFollowingResponse, Get2UsersIdTimelinesReverseChronologicalResponse, Tweet, User } from "../lib/twitter";
+
+export interface ITweetWithExpansions {
+  tweet: Tweet;
+  includes: Expansions;
+}
 
 // TODO: add sign in and sing out functions here
 interface ITwitterContext {
@@ -10,7 +15,7 @@ interface ITwitterContext {
   id?: string;
   userName?: string;
   profileImage?: string;
-  timeline: Array<Tweet>;
+  timeline: Array<ITweetWithExpansions>;
   pollingTimeline: boolean;
   timelineHasMoreTweets: boolean;
   pollTimeline: () => Promise<void>;
@@ -37,7 +42,7 @@ export const TwitterContextProvider: FC<{ children: ReactNode }> = ({ children }
   const [userName, setUserName] = useState<string>("");
   const [profileImage, setProfileImage] = useState<string>("");
 
-  const [timeline, setTimeline] = useState<Array<Tweet>>([]);
+  const [timeline, setTimeline] = useState<Array<ITweetWithExpansions>>([]);
   const [pollingTimeline, setPollingTimeline] = useState<boolean>(false);
   const [nextPaginationToken, setNextPaginationToken] = useState<string>("");
   const [timelineHasMoreTweets, setTimelineHasMoreTweets] = useState<boolean>(false);
@@ -54,9 +59,19 @@ export const TwitterContextProvider: FC<{ children: ReactNode }> = ({ children }
     setPollingTimeline(true);
     try {
       const res = await fetch(`/api/twitter/tweets/timeline?pagination_token=${nextPaginationToken}`);
-      const data: Get2UsersIdTimelinesReverseChronologicalResponse = await res.json();
-     
-      setTimeline(timeline.concat(data.data || []));
+      const data: Get2UsersIdTimelinesReverseChronologicalResponse = await res.json();      
+
+      setTimeline(timeline.concat(
+        (data.data || []).map(t => {
+          return {
+            tweet: t,
+            includes: data.includes || {}
+          }
+        })
+      ));
+
+      // TODO: if timeline has referenced or quoted tweets, get the author links
+
       setNextPaginationToken(data.meta?.nextToken || "");
       setTimelineHasMoreTweets(nextPaginationToken.length > 0)
     } catch(e) {

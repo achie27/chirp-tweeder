@@ -12,86 +12,23 @@ import styles from './styles'
 class Tweet extends React.Component {
   constructor (props) {
     super(props)
-    this.toggleModal = this.toggleModal.bind(this)
-    this.closeModal = this.closeModal.bind(this)
+
     this.state = {
       'modalActive': false,
       'modalIndex': 0
     }
   }
 
-  toggleModal (idx) {
-    this.setState({
-      'modalActive': true,
-      'modalIndex': idx
-    })
-  }
-
-  closeModal () {
-    this.setState({
-      'modalActive': false
-    })
-  }
-
-  getChildContext () {
-    return {
-      'toggleModal': this.toggleModal,
-      'closeModal': this.closeModal
-    }
-  }
 
   render () {
     const {modalActive, modalIndex} = this.state
     let {data, linkProps} = this.props, isRT = false
     let MediaComponent = null, QuoteComponent = null
-    
-    //Support for extended tweets
-    if ('full_text' in data) {
-      data.text = data.full_text;
+    /*
+      extended_entities -> attachments, attachments.media_keys - just for media
+      quoted_status, retweeted_status -> referenced_tweets
 
-      if ('quoted_status' in data) {
-        data.quoted_status.text = data.quoted_status.full_text;
-      }
-      
-      if ('retweeted_status' in data) {
-        data.retweeted_status.text = data.retweeted_status.full_text;
-
-        if ('quoted_status' in data.retweeted_status) {
-          data.retweeted_status.quoted_status.text = data.retweeted_status.quoted_status.full_text;
-        }
-      }
-    }
-    
-    if ('extended_tweet' in data) {
-      data.text = data.extended_tweet.full_text;
-      data.entities = data.extended_tweet.entities;
-      data.extended_entities = data.extended_tweet.extended_entities;
-      data.display_text_range = data.extended_tweet.display_text_range;
-    }
-    if ('quoted_status' in data) {
-      if ('extended_tweet' in data.quoted_status) {
-        data.quoted_status.text = data.quoted_status.extended_tweet.full_text;
-        data.quoted_status.entities = data.quoted_status.extended_tweet.entities;
-        data.quoted_status.extended_entities = data.quoted_status.extended_tweet.extended_entities;
-        data.quoted_status.display_text_range = data.quoted_status.extended_tweet.display_text_range;
-      }
-    }
-    if ('retweeted_status' in data) {
-      if ('extended_tweet' in data.retweeted_status) {
-        data.retweeted_status.text = data.retweeted_status.extended_tweet.full_text;
-        data.retweeted_status.entities = data.retweeted_status.extended_tweet.entities;
-        data.retweeted_status.extended_entities = data.retweeted_status.extended_tweet.extended_entities;
-        data.retweeted_status.display_text_range = data.retweeted_status.extended_tweet.display_text_range;
-      }
-      if (data.retweeted_status.is_quote_status) {
-        if ('extended_tweet' in data.retweeted_status.quoted_status) {
-          data.retweeted_status.quoted_status.text = data.retweeted_status.quoted_status.extended_tweet.full_text;
-          data.retweeted_status.quoted_status.entities = data.retweeted_status.quoted_status.extended_tweet.entities;
-          data.retweeted_status.quoted_status.extended_entities = data.retweeted_status.quoted_status.extended_tweet.extended_entities;
-          data.retweeted_status.quoted_status.display_text_range = data.retweeted_status.quoted_status.extended_tweet.display_text_range;
-        }
-      }
-    }
+    */
     
     // use retweet as data if its a RT
     if (data.retweeted_status) {
@@ -126,15 +63,9 @@ class Tweet extends React.Component {
           {QuoteComponent}
           <Footer data={data} linkProps={linkProps} />
         </div>
-        {modalActive ? <Modal data={data} modalIndex={modalIndex} /> : null}
       </div>
     )
   }
-}
-
-Tweet.childContextTypes = {
-  'toggleModal': PropTypes.func,
-  'closeModal': PropTypes.func
 }
 
 Tweet.propTypes = {

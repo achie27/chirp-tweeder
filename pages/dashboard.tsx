@@ -104,7 +104,6 @@ const TimelineTweetsWrapper = styled.div`
   const TimelineTweets = styled.div`
   position: relative;
   height: inherit;
-  overflow: auto;
   ` 
 
 const TimelineFilterWrapper = styled.div`
@@ -271,8 +270,8 @@ const Dashboard: NextPage = () => {
         </SelectedTimeline>
       </Header>
       <TimelineTweets ref={parentRef}>
-      { timeline.filter(t => !tweedTheTweet(t)).map(tweet => (<TweetDiv tweetData={tweet} userData={{} as any}/>)) }
-      {/* <InfiniteTweetScroll parentRef={parentRef} tweets={timeline.filter(t => !tweedTheTweet(t))} hasMoreTweetsToFetch={timelineHasMoreTweets} isFetchingTweets={pollingTimeline} pollNextTweetSet={pollTimeline} /> */}
+      {/* { timeline.filter(t => !tweedTheTweet(t.tweet)).map(t => (<TweetDiv tweetData={t.tweet} includesData={t.includes}/>)) } */}
+      <InfiniteTweetScroll parentRef={parentRef} timeline={timeline.filter(t => !tweedTheTweet(t.tweet))} hasMoreTweetsToFetch={timelineHasMoreTweets} isFetchingTweets={pollingTimeline} pollNextTweetSet={pollTimeline} />
       </TimelineTweets>
     </TimelineTweetsWrapper>
     <TimelineFilterWrapper>

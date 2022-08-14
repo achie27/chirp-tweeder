@@ -2,7 +2,6 @@ export default {
   'tweet': {
     'backgroundColor': '#ffffff',
     'minHeight': '51px',
-    'maxWidth': '588px',
     'minWidth': '350px',
     'borderBottom': '1px solid #e6ecf0',
     'color': '#14171a',
@@ -139,7 +138,6 @@ export default {
   'AdaptiveMedia': {
     'display': 'inline-block',
     'maxHeight': '508px',
-    'maxWidth': '508px',
     'margin': '10px 0 0 0',
     'overflow': 'hidden',
     'border': '1px solid rgba(0,0,0,0.1)',

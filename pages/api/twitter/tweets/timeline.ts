@@ -1,7 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { unstable_getServerSession } from 'next-auth'
-import { Tweet, TweetsApi, UsersIdTweetsExpansionsEnum, UsersIdTweetsTweetFieldsEnum, UsersIdTweetsUserFieldsEnum } from '../../../../lib/twitter'
+import { Tweet, TweetsApi, UsersIdTweetsExpansionsEnum, UsersIdTweetsMediaFieldsEnum, UsersIdTweetsTweetFieldsEnum, UsersIdTweetsUserFieldsEnum } from '../../../../lib/twitter'
 import { authOptions } from "../../auth/[...nextauth]"
 
 const twitter = new TweetsApi()
@@ -34,16 +34,26 @@ export default async function handler(
         UsersIdTweetsTweetFieldsEnum.ConversationId,
         UsersIdTweetsTweetFieldsEnum.Entities,
         UsersIdTweetsTweetFieldsEnum.InReplyToUserId,
+        UsersIdTweetsTweetFieldsEnum.PublicMetrics,
       ]),
       userFields: new Set([
         UsersIdTweetsUserFieldsEnum.ProfileImageUrl,
         UsersIdTweetsUserFieldsEnum.Name,
         UsersIdTweetsUserFieldsEnum.Username,
+      ]),
+      mediaFields: new Set([
+        UsersIdTweetsMediaFieldsEnum.DurationMs,
+        UsersIdTweetsMediaFieldsEnum.Url,
+        UsersIdTweetsMediaFieldsEnum.Type,
+        UsersIdTweetsMediaFieldsEnum.Height,
+        UsersIdTweetsMediaFieldsEnum.PreviewImageUrl,
+        UsersIdTweetsMediaFieldsEnum.Variants,
 
       ]),
       expansions: new Set([
         UsersIdTweetsExpansionsEnum.ReferencedTweetsId,
         UsersIdTweetsExpansionsEnum.AuthorId,
+        UsersIdTweetsExpansionsEnum.AttachmentsMediaKeys,
       ]),
       ...(paginationToken && { paginationToken })
     },{ 

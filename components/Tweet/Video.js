@@ -7,7 +7,7 @@ class Video extends React.Component {
   render () {
     let {media, gif, autoPlay} = this.props, videoSrc = ''
 
-    media[0].video_info.variants.forEach( v => {
+    media[0].variants.forEach( v => {
       if (v.url.indexOf('.mp4') > -1) {
         videoSrc = v.url
       }
