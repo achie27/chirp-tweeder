@@ -123,7 +123,6 @@ const InfiniteTweetScroll: FC<IInfiniteTweetScrollProps> = ({ timeline, hasMoreT
         {rowVirtualizer.getVirtualItems().map((virtualRow, idx) => {
           const tweet = timeline[virtualRow.index];
           const items = rowVirtualizer.getVirtualItems()
-          console.log("previos tweet end - ", items[(idx - 1) || 0]?.end, "current tweet start - ", virtualRow.start)
           return <div
             key={virtualRow.index}
             ref={(el) => {

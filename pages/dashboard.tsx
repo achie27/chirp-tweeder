@@ -9,7 +9,7 @@ import styled from "styled-components"
 import TweetDiv from '../components/TweetDiv'
 import Select, { StylesConfig } from "react-select"
 import annotations from "../lib/twitter/contextAnnotations"
-import { useFilterContext } from '../providers/FilterContext'
+import { IFilter, useFilterContext } from '../providers/FilterContext'
 import { useTwitterContext } from '../providers/TwitterContext'
 import InfiniteTweetScroll from '../components/InfiniteTweetScroll'
 import {Tweet as TweetEmbed} from "react-twitter-widgets"
@@ -27,26 +27,16 @@ const Header = styled.div`
   `
 
 
-const FilterButtonCreator = styled.div`
-  background-color: #000000;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  height: 60px;
-  position: fixed;
-  top: 0px;
-  z-index: 1;
-  width: inherit;
-`
-
 const SelectedTimeline = styled.div`
   float: left;
-  width: 25%;
   margin-left : 5px;
 `
 
 const SelectedTimelineText = styled.div`
-  color: #1d9bf0
+  color: #1d9bf0;
+  font-weight: bold;
+  font-size: x-large;
+  letter-spacing: 0.5px;
 `
 
 const Menu = styled.div`
@@ -115,6 +105,7 @@ const TimelinesListItem = styled.div`
   font-size: larger;
   &:hover {
   	cursor: pointer;
+    color: white;
   }
 `
 
@@ -134,16 +125,42 @@ const TimelineFilterWrapper = styled.div`
   width: 32%;
 `;
 
+const TimelineFilterCreateWrapper = styled.div`
+  background-color: #000000;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  height: 60px;
+  position: relative;
+  top: 0px;
+  z-index: 1;
+  width: 100%;
+`
+
+
 const TimelineFilter = styled.div`
   position: fixed;
-  background-color: yellow;
   height: inherit;
   width: inherit;
+  display: flex;
+  flex-direction: column;
+  background-color: #000000;
   `
 
+const TimelineFilterSpec = styled.div`
+  text-align: center;
+  padding: 50px;
+  width: 100%;
+  color: white;
+  background-color: rgb(22 24 28);
+  display: flex;
+  flex-direction: column;
+  `
 
 const TimelineFilterCreate = styled.div`
-  margin: 10px 15px;
+  width: 100px;
+  text-align: center;
+  margin-left: 5%;
   padding: 10px 25px;
   text-decoration: none;
   background-color: #1d9bf0;
@@ -231,6 +248,7 @@ const Dashboard: NextPage = () => {
 
   const [following, setFollowing] = useState<Array<User>>([])
   const [selectedTimeline, setSelectedTimeline] = useState<string>("Home")
+  const [currentSelectedFilter, setCurrentSelectedFilter] = useState<IFilter>()
   const [filterModalOpen, setFilterModalOpen] = useState<boolean>(false)
   const [shouldScrollerRefresh, setShouldScrollerRefresh] = useState<boolean>(false)
   const [currentFilterName, setCurrentFilterName] = useState<string>("")
@@ -271,6 +289,12 @@ const Dashboard: NextPage = () => {
     return false;
   }, [filterUserCtxAnnotationMap, selectedTimeline]);
 
+  useEffect(() => {
+    setCurrentSelectedFilter(savedFilters?.find(f => f.name === selectedTimeline));
+  }, [selectedTimeline])
+
+  console.log(currentSelectedFilter, selectedTimeline)
+
   const parentRef = useRef(null)
   return <>
     {/* <Header>
@@ -305,13 +329,23 @@ const Dashboard: NextPage = () => {
       </TimelineTweets>
     </TimelineTweetsWrapper>
     <TimelineFilterWrapper>
-      {/* TODO:remove Header from here */}
-      <FilterButtonCreator>
+      <TimelineFilterCreateWrapper>
         <TimelineFilterCreate onClick={() => {
           setFilterModalOpen(true)
-        }}>Create a filter</TimelineFilterCreate>
-      </FilterButtonCreator>
+        }}>Create filter</TimelineFilterCreate>
+      </TimelineFilterCreateWrapper>
       <TimelineFilter>
+       <TimelineFilterSpec>
+          {currentSelectedFilter ? <>
+            <>This filter is weeding out tweets about</><br/>
+            <>{currentSelectedFilter.contextAnnotationIds.map(caId => annotations.find(a => a.id === caId)?.name).join(", ")} </><br/>
+            <>from</><br/> 
+            <>{currentSelectedFilter.userNames.map(un => following.find(f => f.id === un)?.username).join(", ")}</><br/>
+          </>
+            :
+            "Not weeding out any tweets"
+          }
+       </TimelineFilterSpec>
       </TimelineFilter>
     </TimelineFilterWrapper>
   </Main>
