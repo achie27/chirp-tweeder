@@ -151,14 +151,31 @@ const TimelineFilterSpec = styled.div`
   text-align: center;
   padding: 50px;
   width: 100%;
-  color: white;
   background-color: rgb(22 24 28);
-  display: flex;
-  flex-direction: column;
+  color: silver;
   `
 
+const TimelineFilterSpecText = styled.div`
+  width: 100%;
+  margin: 20px 0;
+`;
+
+const TimelineFilterSpecTags = styled.span`
+  color: white;
+  padding: 8px 15px;
+  background-color: #1d9bf0;
+  margin: 5px;
+  border:0;
+  border-radius: 40px;
+  border-color: white;
+  outline: 0;
+  font-weight: 500;
+  display: inline-block;
+`;
+
+
 const TimelineFilterCreate = styled.div`
-  width: 100px;
+  width: 200px;
   text-align: center;
   margin-left: 5%;
   padding: 10px 25px;
@@ -297,19 +314,6 @@ const Dashboard: NextPage = () => {
 
   const parentRef = useRef(null)
   return <>
-    {/* <Header>
-      <SelectedTimeline>
-        <SelectedTimelineText>{selectedTimeline}</SelectedTimelineText>
-      </SelectedTimeline>
-      <Menu>
-        <MenuList>
-          <MenuListItem>
-            <MenuListItemText href="#" onClick={() => signOut()}>Log out</MenuListItemText>
-          </MenuListItem>
-        </MenuList>
-      </Menu>
-    </Header> */}
-
   <Main>
     <TimelinesWrapper>
       <Timelines>
@@ -321,7 +325,7 @@ const Dashboard: NextPage = () => {
     <TimelineTweetsWrapper>
       <Header>
         <SelectedTimeline>
-          <SelectedTimelineText>{selectedTimeline}</SelectedTimelineText>
+          <SelectedTimelineText>{'>'} {selectedTimeline}</SelectedTimelineText>
         </SelectedTimeline>
       </Header>
       <TimelineTweets ref={parentRef}>
@@ -337,10 +341,14 @@ const Dashboard: NextPage = () => {
       <TimelineFilter>
        <TimelineFilterSpec>
           {currentSelectedFilter ? <>
-            <>This filter is weeding out tweets about</><br/>
-            <>{currentSelectedFilter.contextAnnotationIds.map(caId => annotations.find(a => a.id === caId)?.name).join(", ")} </><br/>
-            <>from</><br/> 
-            <>{currentSelectedFilter.userNames.map(un => following.find(f => f.id === un)?.username).join(", ")}</><br/>
+            <TimelineFilterSpecText>This filter is weeding out tweets about</TimelineFilterSpecText>
+            <TimelineFilterSpecText>{currentSelectedFilter.contextAnnotationIds
+                .map(caId => <TimelineFilterSpecTags>{annotations.find(a => a.id === caId)?.name}</TimelineFilterSpecTags>)
+              } </TimelineFilterSpecText>
+            <TimelineFilterSpecText>from</TimelineFilterSpecText> 
+            <TimelineFilterSpecText>{currentSelectedFilter.userNames
+                .map(un => <TimelineFilterSpecTags>{following.find(f => f.id === un)?.username}</TimelineFilterSpecTags>)
+              }</TimelineFilterSpecText>
           </>
             :
             "Not weeding out any tweets"
