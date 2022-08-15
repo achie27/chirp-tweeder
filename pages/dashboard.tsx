@@ -107,11 +107,6 @@ const TimelinesListItem = styled.div`
   width: inherit;
 `
 
-const TheSecondDiv = styled.div`
-  width: 70%;
-  overflow: auto
-`;
-
 const TimelineTweetsWrapper = styled.div`
   width: 40%;
   background-color: blue;
@@ -121,7 +116,7 @@ const TimelineTweetsWrapper = styled.div`
 const TimelineTweets = styled.div`
   position: relative;
   height: calc(100vh - 60px);
-  overflow:auto
+  overflow: auto
   ` 
 
 const TimelineFilterWrapper = styled.div`

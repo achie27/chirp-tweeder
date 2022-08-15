@@ -33,13 +33,13 @@ const InfiniteTweetScroll: FC<IInfiniteTweetScrollProps> = ({ timeline, hasMoreT
     getScrollElement: () => parentRef.current,
     estimateSize: () => 700,
     overscan: 5,
+    enableSmoothScroll: false,
+    // scrollToFn()
   });
 
   useEffect(() => {
     if (moveToTop) {
-      console.log("scrolling", rowVirtualizer.getVirtualItems())
-      rowVirtualizer.scrollToIndex(0, { align: "start" });
-      console.log("scrolled", rowVirtualizer.getVirtualItems())
+      rowVirtualizer.scrollToOffset(0, { align: "start" });
       setMoveToTop(false);
     }
   }, [moveToTop])
@@ -120,12 +120,16 @@ const InfiniteTweetScroll: FC<IInfiniteTweetScrollProps> = ({ timeline, hasMoreT
           position: 'relative',
         }}
       >
-        {rowVirtualizer.getVirtualItems().map((virtualRow) => {
+        {rowVirtualizer.getVirtualItems().map((virtualRow, idx) => {
           const tweet = timeline[virtualRow.index];
+          const items = rowVirtualizer.getVirtualItems()
+          console.log("previos tweet end - ", items[(idx - 1) || 0]?.end, "current tweet start - ", virtualRow.start)
           return <div
             key={virtualRow.index}
-            ref={virtualRow.measureElement}
-            className={virtualRow.index % 2 ? 'ListItemOdd' : 'ListItemEven'}
+            ref={(el) => {
+              const measured = virtualRow.measureElement(el);
+              return measured
+            }}
             style={{
               position: 'absolute',
               top: 0,
