@@ -160,6 +160,13 @@ const TimelineFilterSpecText = styled.div`
   margin: 20px 0;
 `;
 
+const ModalInputsContainer = styled.div`
+  color: silver;
+  margin-bottom: 10px;
+  width: 100%;
+`;
+
+
 const TimelineFilterSpecTags = styled.span`
   color: white;
   padding: 8px 15px;
@@ -209,38 +216,50 @@ const TimelineFilterCreateModalContent = styled.div`
   position: absolute;
   top: 10%;
   left: calc(50% - 300px);
-  background-color: green;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  background-color: #000000;
+  border:0;
+  border-radius: 20px;
+  border-color: white;
+  outline: 0;
 `
 
+const TimelineFilterCreateModalCloseWrapper = styled.div`
+  width: 100%;
+  height: 50px;
+`;
 
 const TimelineFilterCreateModalClose = styled.div`
   position: absolute;
-  right: 10px;
-  top: 5px;
+  left: 10px;
+  top: 10px;
   font-size: 20px;
   font-weight: bold;
+  padding: 6px 10px;
+  border:0;
+  border-radius: 40px;
+  border-color: white;
+  outline: 0;
+  background-color: rgb(22 24 28);
+  color: rgb(231, 233, 234);
   &:hover {
+    color: white;
   	cursor: pointer;
   }
 `
 
 
 const TimelineFilterCreateModalSelectContainer = styled.div`
+  margin: 10%;
   width: 500px;
-  height: 150px;
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
 `
 
 
 const TimelineFilterSave = styled.div`
   position: absolute;
   right: 10px;
-  bottom: 30px;
+  bottom: 10px;
   margin: 10px 15px;
   padding: 10px 25px;
   text-decoration: none;
@@ -257,6 +276,7 @@ const TimelineFilterSave = styled.div`
 `
 
 const CreateFilterInput = styled.input`
+  width: 100%;
 `
 
 const Dashboard: NextPage = () => {
@@ -359,31 +379,42 @@ const Dashboard: NextPage = () => {
   </Main>
   <TimelineFilterCreateModal hidden={!filterModalOpen}>
     <TimelineFilterCreateModalContent>
-      <TimelineFilterCreateModalClose onClick={() => setFilterModalOpen(false)}>X</TimelineFilterCreateModalClose>
+      <TimelineFilterCreateModalCloseWrapper>
+        <TimelineFilterCreateModalClose onClick={() => setFilterModalOpen(false)}>{"✕"}</TimelineFilterCreateModalClose>
+      </TimelineFilterCreateModalCloseWrapper>
       <TimelineFilterCreateModalSelectContainer>
-        <CreateFilterInput onChange={(e) => setCurrentFilterName(e.target.value)} placeholder="Filter name"/>
-        <Select
-          isMulti
-          name="following"
-          options={following.map(f => ({ label: f.username, value: f.id }))}
-          className="basic-multi-select"
-          classNamePrefix="select"
-          closeMenuOnSelect={false}
-          onChange={(newV) => {
-            setCurrentSelectedUsersInFilter(newV.map(v => v.value));
-          }}
-        />
-        <Select
-          isMulti
-          name="ctxAnnotation"
-          options={annotations.map(f => ({ label: f.name, value: f.id }))}
-          className="basic-multi-select"
-          classNamePrefix="select"
-          closeMenuOnSelect={false}
-          onChange={(newV) => {
-            setCurrentSelectedCtxAnnotationsInFilter(newV.map(v => v.value));
-          }}
-        />
+        <ModalInputsContainer>
+          <>Filter</>
+          <CreateFilterInput onChange={(e) => setCurrentFilterName(e.target.value)}/>
+        </ModalInputsContainer>
+        <ModalInputsContainer>
+          <>Will weed out tweets about</>
+          <Select
+            isMulti
+            name="following"
+            options={following.map(f => ({ label: f.username, value: f.id }))}
+            className="basic-multi-select"
+            classNamePrefix="select"
+            closeMenuOnSelect={false}
+            onChange={(newV) => {
+              setCurrentSelectedUsersInFilter(newV.map(v => v.value));
+            }}
+          />
+        </ModalInputsContainer>
+        <ModalInputsContainer>
+          <>Authored by</>
+          <Select
+            isMulti
+            name="ctxAnnotation"
+            options={annotations.map(f => ({ label: f.name, value: f.id }))}
+            className="basic-multi-select"
+            classNamePrefix="select"
+            closeMenuOnSelect={false}
+            onChange={(newV) => {
+              setCurrentSelectedCtxAnnotationsInFilter(newV.map(v => v.value));
+            }}
+          />
+        </ModalInputsContainer>
         <TimelineFilterSave onClick={handleFilterSave}>Save Filter</TimelineFilterSave>
       </TimelineFilterCreateModalSelectContainer>
     </TimelineFilterCreateModalContent>
