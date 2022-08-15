@@ -161,9 +161,9 @@ const TimelineFilterSpecText = styled.div`
 `;
 
 const ModalInputsContainer = styled.div`
-  color: silver;
-  margin-bottom: 10px;
-  width: 100%;
+color: silver;
+
+  margin: 10px 0;
 `;
 
 
@@ -249,10 +249,10 @@ const TimelineFilterCreateModalClose = styled.div`
 
 
 const TimelineFilterCreateModalSelectContainer = styled.div`
-  margin: 10%;
   width: 500px;
   display: flex;
   flex-direction: column;
+  margin: 0 10%;
 `
 
 
@@ -383,32 +383,32 @@ const Dashboard: NextPage = () => {
         <TimelineFilterCreateModalClose onClick={() => setFilterModalOpen(false)}>{"✕"}</TimelineFilterCreateModalClose>
       </TimelineFilterCreateModalCloseWrapper>
       <TimelineFilterCreateModalSelectContainer>
+        <ModalInputsContainer>Filter</ModalInputsContainer>
         <ModalInputsContainer>
-          <>Filter</>
           <CreateFilterInput onChange={(e) => setCurrentFilterName(e.target.value)}/>
         </ModalInputsContainer>
+        <ModalInputsContainer>Will weed out tweets about</ModalInputsContainer>
         <ModalInputsContainer>
-          <>Will weed out tweets about</>
           <Select
             isMulti
             name="following"
             options={following.map(f => ({ label: f.username, value: f.id }))}
-            className="basic-multi-select"
-            classNamePrefix="select"
+            // className="basic-multi-select"
+            // classNamePrefix="select"
             closeMenuOnSelect={false}
             onChange={(newV) => {
               setCurrentSelectedUsersInFilter(newV.map(v => v.value));
             }}
           />
         </ModalInputsContainer>
+        <ModalInputsContainer>Authored by</ModalInputsContainer>
         <ModalInputsContainer>
-          <>Authored by</>
           <Select
             isMulti
             name="ctxAnnotation"
             options={annotations.map(f => ({ label: f.name, value: f.id }))}
-            className="basic-multi-select"
-            classNamePrefix="select"
+            // className="basic-multi-select"
+            // classNamePrefix="select"
             closeMenuOnSelect={false}
             onChange={(newV) => {
               setCurrentSelectedCtxAnnotationsInFilter(newV.map(v => v.value));
