@@ -189,8 +189,6 @@ class Photos extends React.Component {
     })
     // end media loop
 
-    console.log(mediaElements);
-
     return (
       <div className="AdaptiveMedia" style={mediaStyle}>
         {mediaElements}

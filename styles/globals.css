@@ -1,6 +1,4 @@
-html {
-  overflow-y: scroll;
-}
+html,
 body {
   padding: 0;
   margin: 0;

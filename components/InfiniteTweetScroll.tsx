@@ -22,16 +22,27 @@ interface IInfiniteTweetScrollProps {
   isFetchingTweets: boolean;
   hasMoreTweetsToFetch: boolean;
   pollNextTweetSet: () => Promise<void>;
-  parentRef: MutableRefObject<null>
+  parentRef: MutableRefObject<null>;
+  moveToTop: boolean;
+  setMoveToTop: (m: boolean) => void
 };
 
-const InfiniteTweetScroll: FC<IInfiniteTweetScrollProps> = ({ timeline, hasMoreTweetsToFetch, isFetchingTweets, pollNextTweetSet, parentRef }) => {
+const InfiniteTweetScroll: FC<IInfiniteTweetScrollProps> = ({ timeline, hasMoreTweetsToFetch, isFetchingTweets, pollNextTweetSet, parentRef, moveToTop, setMoveToTop }) => {
   const rowVirtualizer = useVirtualizer({
     count: timeline.length,
     getScrollElement: () => parentRef.current,
     estimateSize: () => 700,
     overscan: 5,
   });
+
+  useEffect(() => {
+    if (moveToTop) {
+      console.log("scrolling", rowVirtualizer.getVirtualItems())
+      rowVirtualizer.scrollToIndex(0, { align: "start" });
+      console.log("scrolled", rowVirtualizer.getVirtualItems())
+      setMoveToTop(false);
+    }
+  }, [moveToTop])
 
   // useEffect(() => {
   //   const [lastItem] = [...rowVirtualizer.getVirtualItems()].reverse()

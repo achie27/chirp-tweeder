@@ -107,15 +107,21 @@ const TimelinesListItem = styled.div`
   width: inherit;
 `
 
+const TheSecondDiv = styled.div`
+  width: 70%;
+  overflow: auto
+`;
+
 const TimelineTweetsWrapper = styled.div`
   width: 40%;
   background-color: blue;
   position: relative;
 
   ` 
-  const TimelineTweets = styled.div`
+const TimelineTweets = styled.div`
   position: relative;
-  height: inherit;
+  height: calc(100vh - 60px);
+  overflow:auto
   ` 
 
 const TimelineFilterWrapper = styled.div`
@@ -221,6 +227,7 @@ const Dashboard: NextPage = () => {
   const [following, setFollowing] = useState<Array<User>>([])
   const [selectedTimeline, setSelectedTimeline] = useState<string>("Home")
   const [filterModalOpen, setFilterModalOpen] = useState<boolean>(false)
+  const [shouldScrollerRefresh, setShouldScrollerRefresh] = useState<boolean>(false)
   const [currentFilterName, setCurrentFilterName] = useState<string>("")
   const [currentSelectedUsersInFilter, setCurrentSelectedUsersInFilter] = useState<Array<string>>([])
   const [currentSelectedCtxAnnotationsInFilter, setCurrentSelectedCtxAnnotationsInFilter] = useState<Array<string>>([])
@@ -240,6 +247,12 @@ const Dashboard: NextPage = () => {
     })
     setFilterModalOpen(false)
   }, [currentFilterName, currentSelectedUsersInFilter, currentSelectedCtxAnnotationsInFilter])
+
+
+  const handleTimelineClick = useCallback((timelineName: string) => {
+    setSelectedTimeline(timelineName)
+    setShouldScrollerRefresh(true);
+  }, [])
 
   const tweedTheTweet = useCallback((tweet: Tweet) => {
     if(
@@ -272,7 +285,7 @@ const Dashboard: NextPage = () => {
     <TimelinesWrapper>
       <Timelines>
         <TimelinesListItem onClick={() => setSelectedTimeline("Home")}>Home</TimelinesListItem>
-        { savedFilters.map(f => <TimelinesListItem key={f.name} onClick={() => setSelectedTimeline(f.name)} >{f.name}</TimelinesListItem>) }
+        { savedFilters.map(f => <TimelinesListItem key={f.name} onClick={() => handleTimelineClick(f.name)} >{f.name}</TimelinesListItem>) }
       </Timelines>
     </TimelinesWrapper>
     <TimelineTweetsWrapper>
@@ -282,8 +295,7 @@ const Dashboard: NextPage = () => {
         </SelectedTimeline>
       </Header>
       <TimelineTweets ref={parentRef}>
-      {/* { timeline.filter(t => !tweedTheTweet(t.tweet)).map(t => (<TweetDiv tweetData={t.tweet} includesData={t.includes}/>)) } */}
-      <InfiniteTweetScroll parentRef={parentRef} timeline={timeline.filter(t => !tweedTheTweet(t.tweet))} hasMoreTweetsToFetch={timelineHasMoreTweets} isFetchingTweets={pollingTimeline} pollNextTweetSet={pollTimeline} />
+        <InfiniteTweetScroll parentRef={parentRef} timeline={timeline.filter(t => !tweedTheTweet(t.tweet))} hasMoreTweetsToFetch={timelineHasMoreTweets} isFetchingTweets={pollingTimeline} pollNextTweetSet={pollTimeline} moveToTop={shouldScrollerRefresh} setMoveToTop={setShouldScrollerRefresh}/>
       </TimelineTweets>
     </TimelineTweetsWrapper>
     <TimelineFilterWrapper>
