@@ -16,7 +16,7 @@ import {Tweet as TweetEmbed} from "react-twitter-widgets"
 
 
 const Header = styled.div`
-  background-color: rgba(0, 0, 0, 0.65);
+  background-color: #000000;
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -28,7 +28,7 @@ const Header = styled.div`
 
 
 const FilterButtonCreator = styled.div`
-  background-color: rgba(0, 0, 0, 0.65);
+  background-color: #000000;
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -92,24 +92,34 @@ const Main = styled.div`
 
 const TimelinesWrapper = styled.div`
   height: 100vh;
-  width: 30%;
+  width: 27%;
 `;
 
 const Timelines = styled.div`
   position: fixed;
-  background-color: red;
+  background-color: #000000;
   height: inherit;
   width: inherit;
+  display: flex;
+  flex-direction: column;
 
 `
 
 const TimelinesListItem = styled.div`
-  width: inherit;
+  width: 80%;
+  padding: 15px 0px;
+  margin: 0 auto;
+  text-align: right;
+  color: rgb(231, 233, 234);
+  font-weight: bold;
+  font-size: larger;
+  &:hover {
+  	cursor: pointer;
+  }
 `
 
 const TimelineTweetsWrapper = styled.div`
   width: 40%;
-  background-color: blue;
   position: relative;
 
   ` 
@@ -121,7 +131,7 @@ const TimelineTweets = styled.div`
 
 const TimelineFilterWrapper = styled.div`
   height: 100vh;
-  width: 35%;
+  width: 32%;
 `;
 
 const TimelineFilter = styled.div`
@@ -279,7 +289,8 @@ const Dashboard: NextPage = () => {
   <Main>
     <TimelinesWrapper>
       <Timelines>
-        <TimelinesListItem onClick={() => setSelectedTimeline("Home")}>Home</TimelinesListItem>
+        <div style={{ height: "60px" }}></div>
+        <TimelinesListItem onClick={() => handleTimelineClick("Home")}>Home</TimelinesListItem>
         { savedFilters.map(f => <TimelinesListItem key={f.name} onClick={() => handleTimelineClick(f.name)} >{f.name}</TimelinesListItem>) }
       </Timelines>
     </TimelinesWrapper>
@@ -297,7 +308,6 @@ const Dashboard: NextPage = () => {
       {/* TODO:remove Header from here */}
       <FilterButtonCreator>
         <TimelineFilterCreate onClick={() => {
-          console.log(filterModalOpen); 
           setFilterModalOpen(true)
         }}>Create a filter</TimelineFilterCreate>
       </FilterButtonCreator>
