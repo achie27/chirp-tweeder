@@ -90,8 +90,6 @@ const Timelines = styled.div`
   background-color: #000000;
   height: inherit;
   width: inherit;
-  display: flex;
-  flex-direction: column;
 
 `
 
@@ -122,7 +120,7 @@ const TimelineTweets = styled.div`
 
 const TimelineFilterWrapper = styled.div`
   height: 100vh;
-  width: 32%;
+  width: 33%;
 `;
 
 const TimelineFilterCreateWrapper = styled.div`
@@ -148,10 +146,9 @@ const TimelineFilter = styled.div`
   `
 
 const TimelineFilterSpec = styled.div`
-  text-align: center;
+  text-align: justify;
   padding: 50px;
-  width: 100%;
-  background-color: rgb(22 24 28);
+  width: 70%;
   color: silver;
   `
 
@@ -161,9 +158,11 @@ const TimelineFilterSpecText = styled.div`
 `;
 
 const ModalInputsContainer = styled.div`
-color: silver;
-
   margin: 10px 0;
+`;
+
+const ModalInputsContainerLabel = styled.div`
+  color: silver;
 `;
 
 
@@ -212,7 +211,7 @@ const TimelineFilterCreateModal = styled.div`
 
 const TimelineFilterCreateModalContent = styled.div`
   width: 600px;
-  height: 400px;
+  height: auto;
   position: absolute;
   top: 10%;
   left: calc(50% - 300px);
@@ -221,11 +220,12 @@ const TimelineFilterCreateModalContent = styled.div`
   border-radius: 20px;
   border-color: white;
   outline: 0;
+  padding-top: 50px;
+  padding-bottom: 75px;
 `
 
 const TimelineFilterCreateModalCloseWrapper = styled.div`
   width: 100%;
-  height: 50px;
 `;
 
 const TimelineFilterCreateModalClose = styled.div`
@@ -277,6 +277,13 @@ const TimelineFilterSave = styled.div`
 
 const CreateFilterInput = styled.input`
   width: 100%;
+  border:0;
+  border-radius: 4px;
+  border-color: hsl(0, 0%, 80%);
+  border-width: 1px;
+  border-style: solid;
+  outline: 0;
+  height: 38px;
 `
 
 const Dashboard: NextPage = () => {
@@ -336,8 +343,8 @@ const Dashboard: NextPage = () => {
   return <>
   <Main>
     <TimelinesWrapper>
+        <div style={{ height: "60px", backgroundColor: "black" }}></div>
       <Timelines>
-        <div style={{ height: "60px" }}></div>
         <TimelinesListItem onClick={() => handleTimelineClick("Home")}>Home</TimelinesListItem>
         { savedFilters.map(f => <TimelinesListItem key={f.name} onClick={() => handleTimelineClick(f.name)} >{f.name}</TimelinesListItem>) }
       </Timelines>
@@ -383,37 +390,40 @@ const Dashboard: NextPage = () => {
         <TimelineFilterCreateModalClose onClick={() => setFilterModalOpen(false)}>{"✕"}</TimelineFilterCreateModalClose>
       </TimelineFilterCreateModalCloseWrapper>
       <TimelineFilterCreateModalSelectContainer>
-        <ModalInputsContainer>Filter</ModalInputsContainer>
         <ModalInputsContainer>
+          <ModalInputsContainerLabel>Filter</ModalInputsContainerLabel>
           <CreateFilterInput onChange={(e) => setCurrentFilterName(e.target.value)}/>
         </ModalInputsContainer>
-        <ModalInputsContainer>Will weed out tweets about</ModalInputsContainer>
         <ModalInputsContainer>
-          <Select
-            isMulti
-            name="following"
-            options={following.map(f => ({ label: f.username, value: f.id }))}
-            // className="basic-multi-select"
-            // classNamePrefix="select"
-            closeMenuOnSelect={false}
-            onChange={(newV) => {
-              setCurrentSelectedUsersInFilter(newV.map(v => v.value));
-            }}
-          />
+          <ModalInputsContainerLabel>will weed out tweets about</ModalInputsContainerLabel>
+            <Select
+              isMulti
+              name="ctxAnnotation"
+              placeholder="Domains..."
+              options={annotations.map(f => ({ label: f.name, value: f.id }))}
+              // className="basic-multi-select"
+              // classNamePrefix="select"
+              closeMenuOnSelect={false}
+              onChange={(newV) => {
+                setCurrentSelectedCtxAnnotationsInFilter(newV.map(v => v.value));
+              }}
+            />
         </ModalInputsContainer>
-        <ModalInputsContainer>Authored by</ModalInputsContainer>
         <ModalInputsContainer>
-          <Select
-            isMulti
-            name="ctxAnnotation"
-            options={annotations.map(f => ({ label: f.name, value: f.id }))}
-            // className="basic-multi-select"
-            // classNamePrefix="select"
-            closeMenuOnSelect={false}
-            onChange={(newV) => {
-              setCurrentSelectedCtxAnnotationsInFilter(newV.map(v => v.value));
-            }}
-          />
+          <ModalInputsContainerLabel>authored by</ModalInputsContainerLabel>
+            <Select
+              isMulti
+              name="following"
+              placeholder="Following..."
+              options={following.map(f => ({ label: f.username, value: f.id }))}
+              // className="basic-multi-select"
+              // classNamePrefix="select"
+              closeMenuOnSelect={false}
+              onChange={(newV) => {
+                setCurrentSelectedUsersInFilter(newV.map(v => v.value));
+              }}
+            />
+
         </ModalInputsContainer>
         <TimelineFilterSave onClick={handleFilterSave}>Save Filter</TimelineFilterSave>
       </TimelineFilterCreateModalSelectContainer>
