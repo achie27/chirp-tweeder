@@ -7,8 +7,8 @@ const twitterUser = new UsersApi()
 export const authOptions: NextAuthOptions = {
   providers: [
     TwitterProvider({
-      clientId: process.env.TWITTER_ID as string,
-      clientSecret: process.env.TWITTER_SECRET as string,
+      clientId: process.env.TWITTER_ID!,
+      clientSecret: process.env.TWITTER_SECRET!,
       version: "2.0",
       authorization: {
         url: "https://twitter.com/i/oauth2/authorize",
@@ -16,7 +16,7 @@ export const authOptions: NextAuthOptions = {
       }
     })
   ],
-  debug: true,
+  secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
     async jwt({ token, account }) {
 
