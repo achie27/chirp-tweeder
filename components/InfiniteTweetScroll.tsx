@@ -39,39 +39,42 @@ const InfiniteTweetScroll: FC<IInfiniteTweetScrollProps> = ({ timeline, hasMoreT
 
   useEffect(() => {
     if (moveToTop) {
-      rowVirtualizer.scrollToOffset(0, { align: "start" });
+      rowVirtualizer.scrollToIndex(0, { align: "start" });
       setMoveToTop(false);
     }
   }, [moveToTop])
 
-  // useEffect(() => {
-  //   const [lastItem] = [...rowVirtualizer.getVirtualItems()].reverse()
-  //   console.log("current lastitem", lastItem)
-  //   if (!lastItem) {
-  //     return
-  //   }
+  useEffect(() => {
+    const [lastItem] = [...rowVirtualizer.getVirtualItems()].reverse()
+    console.log("current lastitem", lastItem)
+    if (!lastItem) {
+      return
+    }
 
-  //   if (
-  //     lastItem.index >= tweets.length - 1 &&
-  //     hasMoreTweetsToFetch &&
-  //     !isFetchingTweets
-  //   ) {
-  //     console.log(
-  //       "polling more tweets",
-  //       lastItem.index,
-  //       hasMoreTweetsToFetch,
-  //       tweets.length,
-  //       isFetchingTweets,
-  //       rowVirtualizer.getVirtualItems()
-  //     )
-  //     pollNextTweetSet()
-  //   }
-  // }, [
-  //   hasMoreTweetsToFetch,
-  //   tweets.length,
-  //   isFetchingTweets,
-  //   rowVirtualizer.getVirtualItems()
-  // ])
+    const id = Math.random() * 100000 + Math.random()*1000
+
+    console.log(id, "current config - ", lastItem.index, timeline.length, hasMoreTweetsToFetch, isFetchingTweets)
+    if (
+      lastItem.index >= timeline.length - 1 &&
+      hasMoreTweetsToFetch &&
+      !isFetchingTweets
+    ) {
+      console.log(
+        id, 
+        "polling more tweets",
+        lastItem.index,
+        hasMoreTweetsToFetch,
+        timeline.length,
+        isFetchingTweets,
+      )
+      pollNextTweetSet()
+    }
+  }, [
+    hasMoreTweetsToFetch,
+    timeline.length,
+    isFetchingTweets,
+    rowVirtualizer.getVirtualItems()
+  ])
 
   // return <div
   //   ref={parentRef}
@@ -122,7 +125,7 @@ const InfiniteTweetScroll: FC<IInfiniteTweetScrollProps> = ({ timeline, hasMoreT
       >
         {rowVirtualizer.getVirtualItems().map((virtualRow, idx) => {
           const tweet = timeline[virtualRow.index];
-          const items = rowVirtualizer.getVirtualItems()
+
           return <div
             key={virtualRow.index}
             ref={(el) => {
@@ -137,7 +140,7 @@ const InfiniteTweetScroll: FC<IInfiniteTweetScrollProps> = ({ timeline, hasMoreT
               transform: `translateY(${virtualRow.start}px)`,
             }}
           >
-            <TweetDiv tweetData={tweet.tweet} includesData={tweet.includes} />
+             <TweetDiv tweetData={tweet.tweet} includesData={tweet.includes} />
           </div>
         })}
       </div>

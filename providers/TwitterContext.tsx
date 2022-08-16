@@ -60,27 +60,27 @@ export const TwitterContextProvider: FC<{ children: ReactNode }> = ({ children }
     try {
       const res = await fetch(`/api/twitter/tweets/timeline?pagination_token=${nextPaginationToken}`);
       const data: Get2UsersIdTimelinesReverseChronologicalResponse = await res.json();      
-
-      setTimeline(timeline.concat(
-        (data.data || []).map(t => {
-          return {
-            tweet: t,
-            includes: data.includes || {}
-          }
-        })
+      setTimeline(
+        timeline.concat(
+          data.data?.map(t => {
+            return {
+              tweet: t,
+              includes: data.includes || {}
+            }
+          }) 
+          || 
+          []
       ));
 
-      // TODO: if timeline has referenced or quoted tweets, get the author links
-
       setNextPaginationToken(data.meta?.nextToken || "");
-      setTimelineHasMoreTweets(nextPaginationToken.length > 0)
+      setTimelineHasMoreTweets((data.meta?.nextToken || "").length > 0)
     } catch(e) {
       // TODO: handle this someday
       console.error(e)
     } finally {
       setPollingTimeline(false);
     }
-  }, [loginStatus]);
+  }, [loginStatus, nextPaginationToken, timeline]);
 
   const fetchFollowing = useCallback(async () => {
     if (loginStatus !== "authenticated") return [];
