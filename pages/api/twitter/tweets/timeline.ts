@@ -27,7 +27,7 @@ export default async function handler(
       undefined,
       undefined,
       undefined,
-      paginationToken,
+      paginationToken || undefined,
       undefined,
       undefined,
       undefined,
@@ -43,7 +43,7 @@ export default async function handler(
         "public_metrics",
       ]),
       new Set<any>([
-        "referenced_tweets",
+        "referenced_tweets.id",
         "referenced_tweets.id.author_id",
         "author_id",
         "attachments.media_keys",
@@ -60,14 +60,14 @@ export default async function handler(
       new Set<any>([
         "profile_image_url",
         "name",
-        "user_name",
+        "username",
       ]), 
       undefined,
       { 
       headers: { "Authorization": "Bearer " + session.accessToken }
     })
   
-    res.status(200).json(d)
+    res.status(200).json(d.data)
 
   } catch (e) {
     res.status(500).json({ error: e })

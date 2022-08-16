@@ -23,7 +23,7 @@ export default async function handler(
     const d = await twitter.usersIdFollowing(
       session.id as string,
       undefined,
-      paginationToken,
+      paginationToken || undefined,
       undefined,
       undefined,
       undefined,
@@ -32,11 +32,9 @@ export default async function handler(
       }
     })
   
-    res.status(200).json(d)
+    res.status(200).json(d.data)
 
   } catch (e) {
-    console.error(e)
     res.status(500).json({ error: e })
-
   }
 }

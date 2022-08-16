@@ -396,11 +396,11 @@ const Dashboard: NextPage = () => {
           {currentSelectedFilter ? <>
             <TimelineFilterSpecText>This filter is weeding out tweets about</TimelineFilterSpecText>
             <TimelineFilterSpecText>{currentSelectedFilter.contextAnnotationIds
-                .map(caId => <TimelineFilterSpecTags>{annotations.find(a => a.id === caId)?.name}</TimelineFilterSpecTags>)
+                .map(caId => <TimelineFilterSpecTags key={caId} >{annotations.find(a => a.id === caId)?.name}</TimelineFilterSpecTags>)
               } </TimelineFilterSpecText>
             <TimelineFilterSpecText>from</TimelineFilterSpecText> 
             <TimelineFilterSpecText>{currentSelectedFilter.userNames
-                .map(un => <TimelineFilterSpecTags>{following.find(f => f.id === un)?.username}</TimelineFilterSpecTags>)
+                .map(un => <TimelineFilterSpecTags key={un}>{following.find(f => f.id === un)?.username}</TimelineFilterSpecTags>)
               }</TimelineFilterSpecText>
           </>
             :
