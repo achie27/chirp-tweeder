@@ -20,12 +20,17 @@ export default async function handler(
   }
   try {
     const paginationToken = String(req.query.pagination_token || "");
-    const d = await twitter.usersIdFollowing({
-      id: session.id as string,
-      ...(paginationToken && { paginationToken })
-    }, { 
-      headers: { "Authorization": "Bearer " + session.accessToken 
-    }})
+    const d = await twitter.usersIdFollowing(
+      session.id as string,
+      undefined,
+      paginationToken,
+      undefined,
+      undefined,
+      undefined,
+      { 
+        headers: { "Authorization": "Bearer " + session.accessToken 
+      }
+    })
   
     res.status(200).json(d)
 

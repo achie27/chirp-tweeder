@@ -1,7 +1,7 @@
 import { NextAuthOptions } from "next-auth";
 import NextAuth from "next-auth/next";
 import TwitterProvider from "next-auth/providers/twitter"
-import { FindMyUserUserFieldsEnum, TweetsApi, UsersApi } from "../../../lib/twitter";
+import { TweetsApi, UsersApi } from "../../../lib/twitter";
 const twitterUser = new UsersApi()
 
 export const authOptions: NextAuthOptions = {
@@ -24,8 +24,8 @@ export const authOptions: NextAuthOptions = {
       if (account) {
         token.accessToken = account.access_token
         try {
-          const d = await twitterUser.findMyUser({ userFields: new Set([FindMyUserUserFieldsEnum.Id])}, { headers: { "Authorization": "Bearer " + token.accessToken } })
-          token.id = d.data?.id;
+          const d = await twitterUser.findMyUser(new Set<"id">(["id"]), undefined, undefined, { headers: { "Authorization": "Bearer " + token.accessToken } })
+          token.id = d.data.data?.id;
 
         } catch(e) {
           if (e) {

@@ -4,7 +4,7 @@ import Image from 'next/image'
 import { useSession, signIn, signOut } from "next-auth/react"
 import { useRouter } from 'next/router'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { Tweet, TweetsApi, User, UsersIdFollowingUserFieldsEnum } from '../lib/twitter'
+import { Tweet, User } from '../lib/twitter'
 import styled from "styled-components"
 import TweetDiv from '../components/TweetDiv'
 import Select, { StylesConfig } from "react-select"
@@ -351,7 +351,7 @@ const Dashboard: NextPage = () => {
 
   const tweedTheTweet = useCallback((tweet: Tweet) => {
     if(
-      tweet.contextAnnotations?.some(ca => filterUserCtxAnnotationMap[selectedTimeline]?.[tweet.authorId!]?.[ca.domain.id])
+      tweet.context_annotations?.some(ca => filterUserCtxAnnotationMap[selectedTimeline]?.[tweet.author_id!]?.[ca.domain.id])
     ) {
       // TWEED
       return true

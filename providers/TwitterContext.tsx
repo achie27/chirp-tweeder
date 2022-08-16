@@ -72,8 +72,8 @@ export const TwitterContextProvider: FC<{ children: ReactNode }> = ({ children }
           []
       ));
 
-      setNextPaginationToken(data.meta?.nextToken || "");
-      setTimelineHasMoreTweets((data.meta?.nextToken || "").length > 0)
+      setNextPaginationToken(data.meta?.next_token || "");
+      setTimelineHasMoreTweets((data.meta?.next_token || "").length > 0)
     } catch(e) {
       // TODO: handle this someday
       console.error(e)
@@ -92,7 +92,7 @@ export const TwitterContextProvider: FC<{ children: ReactNode }> = ({ children }
       const res = await fetch(`/api/twitter/user/following?pagination_token=${currentPaginationToken}`);
       const data: Get2UsersIdFollowingResponse = await res.json();
       following.push(...(data.data || []));
-      currentPaginationToken = data.meta?.nextToken || "";
+      currentPaginationToken = data.meta?.next_token || "";
     } while (currentPaginationToken.length > 0)
 
     return following;

@@ -20,15 +20,18 @@ export default async function handler(
   }
   try {
     const id = String(req.query.id || "");
-    const d = await twitter.findUserById({ id }, { 
+    const d = await twitter.findUserById(id,
+      undefined,
+      undefined,
+      undefined
+      
+      , { 
       headers: { "Authorization": "Bearer " + session.accessToken 
     }})
   
     res.status(200).json(d)
 
   } catch (e) {
-    console.error(e)
     res.status(500).json({ error: e })
-
   }
 }
