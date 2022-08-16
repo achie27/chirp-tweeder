@@ -146,7 +146,7 @@ const TimelineFilter = styled.div`
   `
 
 const TimelineFilterSpec = styled.div`
-  text-align: justify;
+  text-align: left;
   padding: 50px;
   width: 70%;
   color: silver;
