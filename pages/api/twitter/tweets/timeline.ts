@@ -52,6 +52,7 @@ export default async function handler(
       ]),
       expansions: new Set([
         UsersIdTweetsExpansionsEnum.ReferencedTweetsId,
+        UsersIdTweetsExpansionsEnum.ReferencedTweetsIdAuthorId,
         UsersIdTweetsExpansionsEnum.AuthorId,
         UsersIdTweetsExpansionsEnum.AttachmentsMediaKeys,
       ]),

@@ -17,8 +17,10 @@ const TweetDiv: FC<{ tweetData: Tweet, includesData: Expansions }> = ({ tweetDat
   const author = includesData.users?.find(u => u.id === tweetData.authorId)
   const quotedTweet = tweetData.referencedTweets?.find(rt => rt.type === "quoted");
   const quotedTweetExpansion = includesData.tweets?.find(qt => qt.id === quotedTweet?.id);
+  const quotedTweetAuthor = includesData.users?.find(u => u.id === quotedTweetExpansion?.authorId);
   const retweetedTweet = tweetData.referencedTweets?.find(rt => rt.type === "retweeted");
   const retweetedTweetExpansion = includesData.tweets?.find(rt => rt.id === retweetedTweet?.id);
+  const retweetedTweetAuthor = includesData.users?.find(u => u.id === retweetedTweetExpansion?.authorId);
 
   return <ReactTweet data={{
     id_str: tweetData.id,
@@ -43,11 +45,10 @@ const TweetDiv: FC<{ tweetData: Tweet, includesData: Expansions }> = ({ tweetDat
     ...(quotedTweet && quotedTweetExpansion && {
       quoted_status: {
         id_str: quotedTweetExpansion.id,
-        // TODO:fix
         user: {
-          name: author?.name,
-          screen_name: author?.username,
-          profile_image_url: author?.profileImageUrl
+          name: quotedTweetAuthor?.name,
+          screen_name: quotedTweetAuthor?.username,
+          profile_image_url: quotedTweetAuthor?.profileImageUrl
         },
         text: quotedTweetExpansion.text,
         created_at: quotedTweetExpansion.createdAt,
@@ -66,11 +67,10 @@ const TweetDiv: FC<{ tweetData: Tweet, includesData: Expansions }> = ({ tweetDat
     ...(retweetedTweet && retweetedTweetExpansion && {
       retweeted_status: {
         id_str: retweetedTweetExpansion.id,
-        // TODO:fix
         user: {
-          name: author?.name,
-          screen_name: author?.username,
-          profile_image_url: author?.profileImageUrl
+          name: retweetedTweetAuthor?.name,
+          screen_name: retweetedTweetAuthor?.username,
+          profile_image_url: retweetedTweetAuthor?.profileImageUrl
         },
         text: retweetedTweetExpansion.text,
         created_at: retweetedTweetExpansion.createdAt,
