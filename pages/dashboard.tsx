@@ -299,6 +299,11 @@ const Dashboard: NextPage = () => {
   const [currentSelectedUsersInFilter, setCurrentSelectedUsersInFilter] = useState<Array<string>>([])
   const [currentSelectedCtxAnnotationsInFilter, setCurrentSelectedCtxAnnotationsInFilter] = useState<Array<string>>([])
 
+  const infiniteScrollerParentRef = useRef(null);
+  const createFilterModalNameRef = useRef(null);
+  const createFilterModalAnnotationsRef = useRef(null);
+  const createFilterModalUsernamesRef = useRef(null);
+
   useEffect(() => {
     if (loginStatus === "authenticated") {
       if (!pollingTimeline) pollTimeline();
@@ -306,13 +311,32 @@ const Dashboard: NextPage = () => {
     }
   }, [loginStatus])
 
+  const clearCreateFilterModal = () => {
+    setCurrentFilterName("");
+    setCurrentSelectedUsersInFilter([]);
+    setCurrentSelectedCtxAnnotationsInFilter([]);
+
+    // @ts-ignore 
+    createFilterModalAnnotationsRef?.current?.clearValue();
+    // @ts-ignore 
+    createFilterModalUsernamesRef?.current?.clearValue();
+  };
+
   const handleFilterSave = useCallback(() => {
-    addFilter({
-      name: currentFilterName, 
-      userNames: currentSelectedUsersInFilter,
-      contextAnnotationIds: currentSelectedCtxAnnotationsInFilter
-    })
-    setFilterModalOpen(false)
+    // TODO: more validatation logic
+    if (currentFilterName.length > 0 && currentSelectedUsersInFilter.length > 0 && currentSelectedCtxAnnotationsInFilter.length > 0) {
+      addFilter({
+        name: currentFilterName, 
+        userNames: currentSelectedUsersInFilter,
+        contextAnnotationIds: currentSelectedCtxAnnotationsInFilter
+      })
+      setFilterModalOpen(false)
+  
+      clearCreateFilterModal();
+    } else {
+      console.log("YOu gotta add something my dude")
+    }
+
   }, [currentFilterName, currentSelectedUsersInFilter, currentSelectedCtxAnnotationsInFilter])
 
 
@@ -337,9 +361,6 @@ const Dashboard: NextPage = () => {
     setCurrentSelectedFilter(savedFilters?.find(f => f.name === selectedTimeline));
   }, [selectedTimeline])
 
-  console.log(currentSelectedFilter, selectedTimeline)
-
-  const parentRef = useRef(null)
   return <>
   <Main>
     <TimelinesWrapper>
@@ -355,8 +376,8 @@ const Dashboard: NextPage = () => {
           <SelectedTimelineText>{'>'} {selectedTimeline}</SelectedTimelineText>
         </SelectedTimeline>
       </Header>
-      <TimelineTweets ref={parentRef}>
-        <InfiniteTweetScroll parentRef={parentRef} timeline={timeline.filter(t => !tweedTheTweet(t.tweet))} hasMoreTweetsToFetch={timelineHasMoreTweets} isFetchingTweets={pollingTimeline} pollNextTweetSet={pollTimeline} moveToTop={shouldScrollerRefresh} setMoveToTop={setShouldScrollerRefresh}/>
+      <TimelineTweets ref={infiniteScrollerParentRef}>
+        <InfiniteTweetScroll parentRef={infiniteScrollerParentRef} timeline={timeline.filter(t => !tweedTheTweet(t.tweet))} hasMoreTweetsToFetch={timelineHasMoreTweets} isFetchingTweets={pollingTimeline} pollNextTweetSet={pollTimeline} moveToTop={shouldScrollerRefresh} setMoveToTop={setShouldScrollerRefresh}/>
       </TimelineTweets>
     </TimelineTweetsWrapper>
     <TimelineFilterWrapper>
@@ -387,18 +408,24 @@ const Dashboard: NextPage = () => {
   <TimelineFilterCreateModal hidden={!filterModalOpen}>
     <TimelineFilterCreateModalContent>
       <TimelineFilterCreateModalCloseWrapper>
-        <TimelineFilterCreateModalClose onClick={() => setFilterModalOpen(false)}>{"✕"}</TimelineFilterCreateModalClose>
+        <TimelineFilterCreateModalClose onClick={
+          () => { 
+            setFilterModalOpen(false);
+            clearCreateFilterModal();
+          }
+          }>{"✕"}</TimelineFilterCreateModalClose>
       </TimelineFilterCreateModalCloseWrapper>
       <TimelineFilterCreateModalSelectContainer>
         <ModalInputsContainer>
           <ModalInputsContainerLabel>Filter</ModalInputsContainerLabel>
-          <CreateFilterInput onChange={(e) => setCurrentFilterName(e.target.value)}/>
+          <CreateFilterInput ref={createFilterModalNameRef} onChange={(e) => setCurrentFilterName(e.target.value)} value={currentFilterName}/>
         </ModalInputsContainer>
         <ModalInputsContainer>
           <ModalInputsContainerLabel>will weed out tweets about</ModalInputsContainerLabel>
             <Select
               isMulti
               name="ctxAnnotation"
+              ref={createFilterModalAnnotationsRef}
               placeholder="Domains..."
               options={annotations.map(f => ({ label: f.name, value: f.id }))}
               // className="basic-multi-select"
@@ -414,6 +441,7 @@ const Dashboard: NextPage = () => {
             <Select
               isMulti
               name="following"
+              ref={createFilterModalUsernamesRef}
               placeholder="Following..."
               options={following.map(f => ({ label: f.username, value: f.id }))}
               // className="basic-multi-select"
