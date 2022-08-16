@@ -18,9 +18,8 @@ import {Tweet as TweetEmbed} from "react-twitter-widgets"
 const Header = styled.div`
   background-color: #000000;
   overflow: hidden;
-  display: flex;
-  align-items: center;
   height: 60px;
+  width: 100%;
   position: sticky;
   top: 0px;
   z-index: 1;
@@ -29,7 +28,11 @@ const Header = styled.div`
 
 const SelectedTimeline = styled.div`
   float: left;
-  margin-left : 5px;
+  height: 60px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
 `
 
 const SelectedTimelineText = styled.div`
@@ -37,41 +40,9 @@ const SelectedTimelineText = styled.div`
   font-weight: bold;
   font-size: x-large;
   letter-spacing: 0.5px;
-`
+  margin-left : 5px;
 
-const Menu = styled.div`
-  float: right;
-  width: 70%;
-  margin-right : 50px;
 `
-
-
-const MenuList = styled.ul`
-  float: right;
-  list-style-type: none;
-  padding: 0;
-  overflow: hidden;
-`
-
-
-const MenuListItem = styled.li`
-  float: left;
-`
-const MenuListItemText = styled.a`
-  display: block;
-  color: #1d9bf0;
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration: none;
-`
-const MenuListItemFIlterCreateButton = styled.a`
-  display: block;
-  color: #1d9bf0;
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration: none;
-`
-
 
 const Main = styled.div`
   display: flex;
@@ -126,13 +97,14 @@ const TimelineFilterWrapper = styled.div`
 const TimelineFilterCreateWrapper = styled.div`
   background-color: #000000;
   overflow: hidden;
-  display: flex;
-  align-items: center;
+  float: right;
   height: 60px;
   position: relative;
   top: 0px;
   z-index: 1;
-  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 `
 
 
@@ -183,7 +155,6 @@ const TimelineFilterSpecTags = styled.span`
 const TimelineFilterCreate = styled.div`
   width: 200px;
   text-align: center;
-  margin-left: 5%;
   padding: 10px 25px;
   text-decoration: none;
   background-color: #1d9bf0;
@@ -196,6 +167,7 @@ const TimelineFilterCreate = styled.div`
   &:hover {
   	cursor: pointer;
   }
+  margin-right: 5px;
 `
 
 const TimelineFilterCreateModal = styled.div`
@@ -375,17 +347,15 @@ const Dashboard: NextPage = () => {
         <SelectedTimeline>
           <SelectedTimelineText>{'>'} {selectedTimeline}</SelectedTimelineText>
         </SelectedTimeline>
+        <TimelineFilterCreateWrapper>
+          <TimelineFilterCreate onClick={() => setFilterModalOpen(true)}>Create filter</TimelineFilterCreate>
+        </TimelineFilterCreateWrapper>
       </Header>
       <TimelineTweets ref={infiniteScrollerParentRef}>
         <InfiniteTweetScroll parentRef={infiniteScrollerParentRef} timeline={timeline.filter(t => !tweedTheTweet(t.tweet))} hasMoreTweetsToFetch={timelineHasMoreTweets} isFetchingTweets={pollingTimeline} pollNextTweetSet={pollTimeline} moveToTop={shouldScrollerRefresh} setMoveToTop={setShouldScrollerRefresh}/>
       </TimelineTweets>
     </TimelineTweetsWrapper>
     <TimelineFilterWrapper>
-      <TimelineFilterCreateWrapper>
-        <TimelineFilterCreate onClick={() => {
-          setFilterModalOpen(true)
-        }}>Create filter</TimelineFilterCreate>
-      </TimelineFilterCreateWrapper>
       <TimelineFilter>
        <TimelineFilterSpec>
           {currentSelectedFilter ? <>

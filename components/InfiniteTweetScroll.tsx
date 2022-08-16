@@ -46,27 +46,18 @@ const InfiniteTweetScroll: FC<IInfiniteTweetScrollProps> = ({ timeline, hasMoreT
 
   useEffect(() => {
     const [lastItem] = [...rowVirtualizer.getVirtualItems()].reverse()
-    console.log("current lastitem", lastItem)
     if (!lastItem) {
       return
     }
 
     const id = Math.random() * 100000 + Math.random()*1000
 
-    console.log(id, "current config - ", lastItem.index, timeline.length, hasMoreTweetsToFetch, isFetchingTweets)
     if (
       lastItem.index >= timeline.length - 1 &&
       hasMoreTweetsToFetch &&
       !isFetchingTweets
     ) {
-      console.log(
-        id, 
-        "polling more tweets",
-        lastItem.index,
-        hasMoreTweetsToFetch,
-        timeline.length,
-        isFetchingTweets,
-      )
+
       pollNextTweetSet()
     }
   }, [
@@ -75,44 +66,6 @@ const InfiniteTweetScroll: FC<IInfiniteTweetScrollProps> = ({ timeline, hasMoreT
     isFetchingTweets,
     rowVirtualizer.getVirtualItems()
   ])
-
-  // return <div
-  //   ref={parentRef}
-  //   style={{
-  //     height: "2000px",
-  //     width: "100%"
-  //   }}
-  // >
-  //   <div
-  //     style={{
-  //       height: `${rowVirtualizer.getTotalSize()}px`,
-  //       width: '100%',
-  //       position: 'relative',
-  //     }}
-  //   >
-  //     {rowVirtualizer.getVirtualItems().map((virtualRow) => {
-  //       // const isLoaderRow = virtualRow.index > tweets.length - 1
-  //       const tweet = tweets[virtualRow.index]
-  //       return (
-  //         <div
-  //         key={virtualRow.key}
-  //         ref={virtualRow.measureElement}
-  //         style={{
-  //           position: 'absolute',
-  //           top: 0,
-  //           left: 0,
-  //           width: '100%',
-  //           transform: `translateY(${virtualRow.start}px)`,
-  //         }}
-  //       >
-
-  //               <TweetEmbed tweetId={tweet.id} />
-  //         </div>
-  //       )
-
-  //     })}
-  //   </div>
-  // </div>
 
   return (
     <>
