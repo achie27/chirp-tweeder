@@ -27,7 +27,7 @@ const MainContainer = styled.div`
 const TweederDesc = styled.div`
   position: relative;
   float: left;
-  width: 60%;
+  width: 70%;
   display: flex;
   flex-direction: column;
   text-align: left;
@@ -50,7 +50,7 @@ const TweederSubHeadline = styled.div`
 const TweederLogin = styled.div`
   position: relative;
   float: right;
-  width: 40%;
+  width: 30%;
   display: flex;
   flex-direction: column;
   padding: 10px;
