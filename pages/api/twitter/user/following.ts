@@ -1,10 +1,10 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import type { NextApiRequest, NextApiResponse } from 'next'
-import { unstable_getServerSession } from 'next-auth'
-import { Tweet, TweetsApi, UsersApi } from '../../../../lib/twitter'
-import { authOptions } from "../../auth/[...nextauth]"
+import type { NextApiRequest, NextApiResponse } from "next";
+import { unstable_getServerSession } from "next-auth";
+import { Tweet, TweetsApi, UsersApi } from "../../../../lib/twitter";
+import { authOptions } from "../../auth/[...nextauth]";
 
-const twitter = new UsersApi()
+const twitter = new UsersApi();
 
 export default async function handler(
   req: NextApiRequest,
@@ -14,9 +14,9 @@ export default async function handler(
     return res.status(400).end();
   }
 
-  const session = await unstable_getServerSession(req, res, authOptions)
+  const session = await unstable_getServerSession(req, res, authOptions);
   if (!session) {
-    return res.status(200).json({ users: [] })
+    return res.status(200).json({ users: [] });
   }
   try {
     const paginationToken = String(req.query.pagination_token || "");
@@ -27,14 +27,13 @@ export default async function handler(
       undefined,
       undefined,
       undefined,
-      { 
-        headers: { "Authorization": "Bearer " + session.accessToken 
+      {
+        headers: { Authorization: "Bearer " + session.accessToken },
       }
-    })
-  
-    res.status(200).json(d.data)
+    );
 
+    res.status(200).json(d.data);
   } catch (e) {
-    res.status(500).json({ error: e })
+    res.status(500).json({ error: e });
   }
 }

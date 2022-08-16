@@ -7,12 +7,10 @@ const RedirectionPage: FC = () => {
   const router = useRouter();
   useEffect(() => {
     router.push("/");
-  })
+  });
 
   // TODO: Add props for redicrection context
-  return <>
-    Welp ...
-  </>
-}
+  return <>Welp ...</>;
+};
 
 export default RedirectionPage;
