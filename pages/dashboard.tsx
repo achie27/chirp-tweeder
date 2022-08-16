@@ -28,6 +28,7 @@ const Header = styled.div`
 
 const SelectedTimeline = styled.div`
   float: left;
+  width: 70%;
   height: 60px;
   display: flex;
   flex-direction: column;
@@ -61,7 +62,7 @@ const Timelines = styled.div`
   background-color: #000000;
   height: inherit;
   width: inherit;
-
+  overflow-y: auto;
 `
 
 const TimelinesListItem = styled.div`
@@ -258,6 +259,37 @@ const CreateFilterInput = styled.input`
   height: 38px;
 `
 
+const SignOutButtonWrapper = styled.div`
+  background-color: #000000;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  height: 60px;
+  position: relative;
+  top: 0px;
+  z-index: 1;
+  width: 100%;
+`
+
+const SignOutButton = styled.div`
+  width: 150px;
+  text-align: center;
+  margin-left: 5px;
+  padding: 10px 25px;
+  text-decoration: none;
+  background-color: rgb(22 24 28);
+  border:0;
+  border-radius: 40px;
+  border-color: white;
+  outline: 0;
+  color: rgb(231, 233, 234);
+  font-weight: bold;
+  &:hover {
+  	cursor: pointer;
+    color: white;
+  }
+`
+
 const Dashboard: NextPage = () => {
   const { addFilter, filterUserCtxAnnotationMap, savedFilters } = useFilterContext()
   const { loginStatus, timeline, pollingTimeline, pollTimeline, fetchFollowing, timelineHasMoreTweets } = useTwitterContext()
@@ -357,6 +389,9 @@ const Dashboard: NextPage = () => {
     </TimelineTweetsWrapper>
     <TimelineFilterWrapper>
       <TimelineFilter>
+        <SignOutButtonWrapper>
+          <SignOutButton onClick={() => { signOut({ callbackUrl: "/" }) }}>Sign out</SignOutButton>
+        </SignOutButtonWrapper>
        <TimelineFilterSpec>
           {currentSelectedFilter ? <>
             <TimelineFilterSpecText>This filter is weeding out tweets about</TimelineFilterSpecText>
