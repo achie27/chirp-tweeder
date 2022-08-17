@@ -7,14 +7,14 @@ import {
   useCallback,
   useContext,
   useEffect,
-  useState,
+  useState
 } from "react";
 import {
   Expansions,
   Get2UsersIdFollowingResponse,
   Get2UsersIdTimelinesReverseChronologicalResponse,
   Tweet,
-  User,
+  User
 } from "../lib/twitter";
 
 export interface ITweetWithExpansions {

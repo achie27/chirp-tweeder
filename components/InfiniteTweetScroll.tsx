@@ -1,29 +1,23 @@
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/router";
-import React, {
+import { useVirtualizer } from "@tanstack/react-virtual";
+import {
   FC,
-  MutableRefObject,
-  ReactNode,
-  useEffect,
-  useRef,
+  MutableRefObject, useEffect
 } from "react";
 import styled from "styled-components";
 import {
-  ITweetWithExpansions,
-  useTwitterContext,
+  ITweetWithExpansions
 } from "../providers/TwitterContext";
-import { useVirtualizer } from "@tanstack/react-virtual";
-import { Tweet } from "../lib/twitter";
-// import { Tweet as TweetEmbed } from "react-twitter-widgets"
-import { Tweet as TweetEmbed } from "react-static-tweets";
 
 // @ts-ignore
-import TweetWidget from "react-tweet";
 import TweetDiv from "./TweetDiv";
 
-const Container = styled.div`
-  width: inherit;
-  position: relative;
+const LoaderRow = styled.div`
+  width: 100%;
+  padding: 15px 0;
+  color:  rgb(231, 233, 234);
+  background-color: rgb(22 24 28);
+  font-weight: 500;
+  text-align: center;
 `;
 
 interface IInfiniteTweetScrollProps {
@@ -46,12 +40,11 @@ const InfiniteTweetScroll: FC<IInfiniteTweetScrollProps> = ({
   setMoveToTop,
 }) => {
   const rowVirtualizer = useVirtualizer({
-    count: timeline.length,
+    count: hasMoreTweetsToFetch ? timeline.length + 1: timeline.length,
     getScrollElement: () => parentRef.current,
     estimateSize: () => 700,
     overscan: 5,
     enableSmoothScroll: false,
-    // scrollToFn()
   });
 
   useEffect(() => {
@@ -66,8 +59,6 @@ const InfiniteTweetScroll: FC<IInfiniteTweetScrollProps> = ({
     if (!lastItem) {
       return;
     }
-
-    const id = Math.random() * 100000 + Math.random() * 1000;
 
     if (
       lastItem.index >= timeline.length - 1 &&
@@ -92,7 +83,8 @@ const InfiniteTweetScroll: FC<IInfiniteTweetScrollProps> = ({
           position: "relative",
         }}
       >
-        {rowVirtualizer.getVirtualItems().map((virtualRow, idx) => {
+        {rowVirtualizer.getVirtualItems().map((virtualRow) => {
+          const isLoaderRow = virtualRow.index > timeline.length - 1
           const tweet = timeline[virtualRow.index];
 
           return (
@@ -110,7 +102,15 @@ const InfiniteTweetScroll: FC<IInfiniteTweetScrollProps> = ({
                 transform: `translateY(${virtualRow.start}px)`,
               }}
             >
-              <TweetDiv tweetData={tweet.tweet} includesData={tweet.includes} />
+              {
+                isLoaderRow ?
+                  hasMoreTweetsToFetch ? 
+                    <LoaderRow>Loading more ...</LoaderRow>
+                    :
+                    <LoaderRow>Nothing more to show</LoaderRow>
+                :
+                <TweetDiv tweetData={tweet.tweet} includesData={tweet.includes} />
+              }
             </div>
           );
         })}
