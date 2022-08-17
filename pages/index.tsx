@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import { useTwitterContext } from "../providers/TwitterContext";
 import styled from "styled-components";
 import { useEffect, useState } from "react";
+import TextTransition, { presets } from "react-text-transition";
 
 const headers = [
   "Had enough of sports updates from your adrenaline-spiked friend for today?",
@@ -101,12 +102,13 @@ const Home: NextPage = () => {
   const { loginStatus } = useTwitterContext();
   const router = useRouter();
 
-  const [header, setHeader] = useState("");
+  const [headerIdx, setHeaderIdx] = useState(0);
   useEffect(() => {
-    setHeader(headers[Date.now() % headers.length]);
-    setInterval(() => {
-      setHeader(headers[Date.now() % headers.length]);
-    }, 10 * 1000);
+    const intervalId = setInterval(() => {
+      setHeaderIdx(h => (h + 1) % headers.length);
+    }, 7 * 1000);
+
+    return () => clearInterval(intervalId);
   }, []);
 
   if (loginStatus === "authenticated") {
@@ -119,7 +121,11 @@ const Home: NextPage = () => {
       <Main>
         <MainContainer>
           <TweederDesc>
-            <TweederHeadline>{header}</TweederHeadline>
+            <TweederHeadline>
+              <TextTransition className={"auto-height"} springConfig={presets.slow}>
+                  {headers[headerIdx]}
+              </TextTransition>
+            </TweederHeadline>
             <TweederSubHeadline>
               Use Tweeder to weed out tweets on certain domains made by certain
               authors from your timeline
