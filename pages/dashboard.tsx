@@ -21,7 +21,7 @@ const Header = styled.div`
 
 const SelectedTimeline = styled.div`
   float: left;
-  width: 70%;
+  width: calc(90% - 200px);
   height: 60px;
   display: flex;
   flex-direction: column;
@@ -61,7 +61,7 @@ const TimelinesListItem = styled.div`
   margin: 0 auto;
   text-align: right;
   color: rgb(231, 233, 234);
-  font-weight: bold;
+  font-weight: 500;
   font-size: larger;
   &:hover {
     cursor: pointer;

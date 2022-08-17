@@ -26,7 +26,7 @@ export default async function handler(
       session.id as string,
       undefined,
       undefined,
-      undefined,
+      40,
       paginationToken || undefined,
       undefined,
       undefined,
