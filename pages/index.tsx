@@ -1,12 +1,10 @@
 import type { NextPage } from "next";
-import Head from "next/head";
-import Image from "next/image";
-import { useSession, signIn, signOut } from "next-auth/react";
+import { signIn } from "next-auth/react";
 import { useRouter } from "next/router";
-import { useTwitterContext } from "../providers/TwitterContext";
-import styled from "styled-components";
 import { useEffect, useState } from "react";
 import TextTransition, { presets } from "react-text-transition";
+import styled from "styled-components";
+import { useTwitterContext } from "../providers/TwitterContext";
 
 const headers = [
   "Had enough of sports updates from your adrenaline-spiked friend for today?",
@@ -105,7 +103,7 @@ const Home: NextPage = () => {
   const [headerIdx, setHeaderIdx] = useState(0);
   useEffect(() => {
     const intervalId = setInterval(() => {
-      setHeaderIdx(h => (h + 1) % headers.length);
+      setHeaderIdx((h) => (h + 1) % headers.length);
     }, 7 * 1000);
 
     return () => clearInterval(intervalId);
@@ -122,8 +120,11 @@ const Home: NextPage = () => {
         <MainContainer>
           <TweederDesc>
             <TweederHeadline>
-              <TextTransition className={"auto-height"} springConfig={presets.slow}>
-                  {headers[headerIdx]}
+              <TextTransition
+                className={"auto-height"}
+                springConfig={presets.slow}
+              >
+                {headers[headerIdx]}
               </TextTransition>
             </TweederHeadline>
             <TweederSubHeadline>

@@ -205,11 +205,16 @@ const TimelineFilterCreateModalClose = styled.div`
   }
 `;
 
-const TimelineFilterCreateModalSelectContainer = styled.div`
+const TimelineFilterCreateModalSelect = styled.div`
   width: 500px;
   display: flex;
   flex-direction: column;
-  margin: 0 10%;
+  margin: auto;
+`;
+
+const TimelineFilterCreateModalSelectContainer = styled.div`
+  width: 80%;
+  margin: auto;
 `;
 
 const TimelineFilterSave = styled.div`
@@ -473,7 +478,7 @@ const Dashboard: NextPage = () => {
               {"✕"}
             </TimelineFilterCreateModalClose>
           </TimelineFilterCreateModalCloseWrapper>
-          <TimelineFilterCreateModalSelectContainer>
+          <TimelineFilterCreateModalSelect>
             <ModalInputsContainer>
               <ModalInputsContainerLabel>Filter</ModalInputsContainerLabel>
               <CreateFilterInput
@@ -524,10 +529,11 @@ const Dashboard: NextPage = () => {
                 }}
               />
             </ModalInputsContainer>
+
             <TimelineFilterSave onClick={handleFilterSave}>
               Save Filter
             </TimelineFilterSave>
-          </TimelineFilterCreateModalSelectContainer>
+          </TimelineFilterCreateModalSelect>
         </TimelineFilterCreateModalContent>
       </TimelineFilterCreateModal>
     </>
