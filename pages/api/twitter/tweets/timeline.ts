@@ -21,10 +21,11 @@ export default async function handler(
 
   try {
     const paginationToken = String(req.query.pagination_token || "");
+    const sinceId = String(req.query.since_id || "");
 
     const d = await twitter.usersIdTimeline(
       session.id as string,
-      undefined,
+      sinceId || undefined,
       undefined,
       40,
       paginationToken || undefined,

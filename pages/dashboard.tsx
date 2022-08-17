@@ -19,21 +19,30 @@ const Header = styled.div`
   z-index: 1;
 `;
 
-const SelectedTimeline = styled.div`
+const RefreshTimelineWithNewTweetsWrapper = styled.div`
   float: left;
-  width: calc(90% - 200px);
   height: 60px;
   display: flex;
   flex-direction: column;
   justify-content: center;
 `;
 
-const SelectedTimelineText = styled.div`
-  color: #1d9bf0;
+const RefreshTimelineWithNewTweets = styled.div`
+  color: white;
   font-weight: bold;
-  font-size: x-large;
   letter-spacing: 0.5px;
   margin-left: 5px;
+  text-align: center;
+  padding: 10px 25px;
+  text-decoration: none;
+  background-color: #1d9bf0;
+  border: 0;
+  border-radius: 40px;
+  border-color: white;
+  outline: 0;
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 const Main = styled.div`
@@ -311,7 +320,10 @@ const Dashboard: NextPage = () => {
 
   useEffect(() => {
     if (loginStatus === "authenticated") {
-      if (!pollingTimeline) pollTimeline();
+      if (!pollingTimeline) {
+        console.log("og useeffect polling timeline")
+        pollTimeline();
+      } 
       fetchFollowing().then(setFollowing).catch(console.error);
     }
   }, [loginStatus]);
@@ -356,6 +368,11 @@ const Dashboard: NextPage = () => {
     setShouldScrollerRefresh(true);
   }, []);
 
+  const handleRefreshClick = useCallback(() => {
+    pollTimeline(timeline[0]?.tweet.id);
+    setShouldScrollerRefresh(true);
+  }, [timeline]);
+
   const tweedTheTweet = useCallback(
     (tweet: Tweet) => {
       if (
@@ -388,11 +405,17 @@ const Dashboard: NextPage = () => {
         <TimelinesWrapper>
           <div style={{ height: "60px", backgroundColor: "black" }}></div>
           <Timelines>
-            <TimelinesListItem onClick={() => handleTimelineClick("Home")}>
+            <TimelinesListItem
+              className={selectedTimeline === "Home" ? "selected-timeline" : ""}
+              onClick={() => handleTimelineClick("Home")}
+            >
               Home
             </TimelinesListItem>
             {savedFilters.map((f) => (
               <TimelinesListItem
+                className={
+                  selectedTimeline === f.name ? "selected-timeline" : ""
+                }
                 key={f.name}
                 onClick={() => handleTimelineClick(f.name)}
               >
@@ -403,11 +426,14 @@ const Dashboard: NextPage = () => {
         </TimelinesWrapper>
         <TimelineTweetsWrapper>
           <Header>
-            <SelectedTimeline>
-              <SelectedTimelineText>
-                {">"} {selectedTimeline}
-              </SelectedTimelineText>
-            </SelectedTimeline>
+            <RefreshTimelineWithNewTweetsWrapper>
+              <RefreshTimelineWithNewTweets
+                title="Load new tweets"
+                onClick={() => handleRefreshClick()}
+              >
+                ↻
+              </RefreshTimelineWithNewTweets>
+            </RefreshTimelineWithNewTweetsWrapper>
             <TimelineFilterCreateWrapper>
               <TimelineFilterCreate onClick={() => setFilterModalOpen(true)}>
                 Create filter

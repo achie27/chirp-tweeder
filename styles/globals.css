@@ -29,3 +29,13 @@ a {
     background: black;
   }
 }
+
+.selected-timeline {
+  color: #1d9bf0 !important;
+  font-weight: bolder !important;
+}
+
+/* .selected-timeline:after {
+  content: " <";
+  color: white;
+} */

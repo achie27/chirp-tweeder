@@ -7,14 +7,14 @@ import {
   useCallback,
   useContext,
   useEffect,
-  useState
+  useState,
 } from "react";
 import {
   Expansions,
   Get2UsersIdFollowingResponse,
   Get2UsersIdTimelinesReverseChronologicalResponse,
   Tweet,
-  User
+  User,
 } from "../lib/twitter";
 
 export interface ITweetWithExpansions {
@@ -32,7 +32,7 @@ interface ITwitterContext {
   timeline: Array<ITweetWithExpansions>;
   pollingTimeline: boolean;
   timelineHasMoreTweets: boolean;
-  pollTimeline: () => Promise<void>;
+  pollTimeline: (pollFromTweetId?: string) => Promise<void>;
   fetchFollowing: () => Promise<Array<User>>;
 }
 
@@ -70,36 +70,61 @@ export const TwitterContextProvider: FC<{ children: ReactNode }> = ({
     }
   }, [session]);
 
-  const pollTimeline = useCallback(async () => {
-    if (loginStatus !== "authenticated") return;
+  const pollTimeline = useCallback(
+    async (pollFromTweetId?: string) => {
+      if (loginStatus !== "authenticated") return;
+      if (pollingTimeline) return;
 
-    setPollingTimeline(true);
-    try {
-      const res = await fetch(
-        `/api/twitter/tweets/timeline?pagination_token=${nextPaginationToken}`
-      );
-      const data: Get2UsersIdTimelinesReverseChronologicalResponse =
-        await res.json();
-      setTimeline(
-        timeline.concat(
-          data.data?.map((t) => {
-            return {
-              tweet: t,
-              includes: data.includes || {},
-            };
-          }) || []
-        )
-      );
+      setPollingTimeline(true);
+      
+      console.log(pollFromTweetId, nextPaginationToken);
 
-      setNextPaginationToken(data.meta?.next_token || "");
-      setTimelineHasMoreTweets((data.meta?.next_token || "").length > 0);
-    } catch (e) {
-      // TODO: handle this someday
-      console.error(e);
-    } finally {
-      setPollingTimeline(false);
-    }
-  }, [loginStatus, nextPaginationToken, timeline]);
+      try {
+        let extendedQP = "";
+        if (pollFromTweetId) {
+          extendedQP = `&since_id=${pollFromTweetId}`;
+        }
+
+        const res = await fetch(
+          `/api/twitter/tweets/timeline?pagination_token=${nextPaginationToken}${extendedQP}`
+        );
+        const data: Get2UsersIdTimelinesReverseChronologicalResponse =
+          await res.json();
+        if (pollFromTweetId) {
+          setTimeline((t) => {
+            return (
+              data.data?.map((tO) => {
+                return {
+                  tweet: tO,
+                  includes: data.includes || {},
+                };
+              }) || []
+            ).concat(timeline); // TODO: fix this lul
+          });
+        } else {
+          setTimeline((t) => {
+            return timeline.concat( // TODO: fix this lul
+              data.data?.map((tO) => {
+                return {
+                  tweet: tO,
+                  includes: data.includes || {},
+                };
+              }) || []
+            );
+          });
+        }
+
+        setNextPaginationToken(data.meta?.next_token || "");
+        setTimelineHasMoreTweets((data.meta?.next_token || "").length > 0);
+      } catch (e) {
+        // TODO: handle this someday
+        console.error(e);
+      } finally {
+        setPollingTimeline(false);
+      }
+    },
+    [loginStatus, nextPaginationToken, pollingTimeline]
+  );
 
   const fetchFollowing = useCallback(async () => {
     if (loginStatus !== "authenticated") return [];

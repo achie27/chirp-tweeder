@@ -1,12 +1,7 @@
 import { useVirtualizer } from "@tanstack/react-virtual";
-import {
-  FC,
-  MutableRefObject, useEffect
-} from "react";
+import { FC, MutableRefObject, useEffect } from "react";
 import styled from "styled-components";
-import {
-  ITweetWithExpansions
-} from "../providers/TwitterContext";
+import { ITweetWithExpansions } from "../providers/TwitterContext";
 
 // @ts-ignore
 import TweetDiv from "./TweetDiv";
@@ -14,7 +9,7 @@ import TweetDiv from "./TweetDiv";
 const LoaderRow = styled.div`
   width: 100%;
   padding: 15px 0;
-  color:  rgb(231, 233, 234);
+  color: rgb(231, 233, 234);
   background-color: rgb(22 24 28);
   font-weight: 500;
   text-align: center;
@@ -40,7 +35,7 @@ const InfiniteTweetScroll: FC<IInfiniteTweetScrollProps> = ({
   setMoveToTop,
 }) => {
   const rowVirtualizer = useVirtualizer({
-    count: hasMoreTweetsToFetch ? timeline.length + 1: timeline.length,
+    count: hasMoreTweetsToFetch ? timeline.length + 1 : timeline.length,
     getScrollElement: () => parentRef.current,
     estimateSize: () => 700,
     overscan: 5,
@@ -65,6 +60,7 @@ const InfiniteTweetScroll: FC<IInfiniteTweetScrollProps> = ({
       hasMoreTweetsToFetch &&
       !isFetchingTweets
     ) {
+      console.log("infinite scroller polling timeline")
       pollNextTweetSet();
     }
   }, [
@@ -84,7 +80,7 @@ const InfiniteTweetScroll: FC<IInfiniteTweetScrollProps> = ({
         }}
       >
         {rowVirtualizer.getVirtualItems().map((virtualRow) => {
-          const isLoaderRow = virtualRow.index > timeline.length - 1
+          const isLoaderRow = virtualRow.index > timeline.length - 1;
           const tweet = timeline[virtualRow.index];
 
           return (
@@ -102,15 +98,18 @@ const InfiniteTweetScroll: FC<IInfiniteTweetScrollProps> = ({
                 transform: `translateY(${virtualRow.start}px)`,
               }}
             >
-              {
-                isLoaderRow ?
-                  hasMoreTweetsToFetch ? 
-                    <LoaderRow>Loading more ...</LoaderRow>
-                    :
-                    <LoaderRow>Nothing more to show</LoaderRow>
-                :
-                <TweetDiv tweetData={tweet.tweet} includesData={tweet.includes} />
-              }
+              {isLoaderRow ? (
+                hasMoreTweetsToFetch ? (
+                  <LoaderRow>Loading more ...</LoaderRow>
+                ) : (
+                  <LoaderRow>Nothing more to show</LoaderRow>
+                )
+              ) : (
+                <TweetDiv
+                  tweetData={tweet.tweet}
+                  includesData={tweet.includes}
+                />
+              )}
             </div>
           );
         })}
