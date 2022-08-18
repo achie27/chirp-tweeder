@@ -1,4 +1,5 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
+import { AxiosError } from "axios";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { unstable_getServerSession } from "next-auth";
 import { Tweet, TweetsApi } from "../../../../lib/twitter";
@@ -68,7 +69,7 @@ export default async function handler(
     res.status(200).json(d.data);
   } catch (e: any) {
     if (e?.response) {
-      console.log("something was returned", e.response)
+      console.log("something was returned", e.response.data, e.response.status, e.response.headers)
     }
     res.status(500).json({ error: e.toJSON() });
   }
