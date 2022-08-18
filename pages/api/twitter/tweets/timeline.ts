@@ -66,7 +66,10 @@ export default async function handler(
     );
 
     res.status(200).json(d.data);
-  } catch (e) {
-    res.status(500).json({ error: e });
+  } catch (e: any) {
+    if (e?.response) {
+      console.log("something was returned", e.response)
+    }
+    res.status(500).json({ error: e.toJSON() });
   }
 }
