@@ -22,7 +22,7 @@ export default async function handler(
     const paginationToken = String(req.query.pagination_token || "");
     const d = await twitter.usersIdFollowing(
       session.id as string,
-      undefined,
+      1000,
       paginationToken || undefined,
       undefined,
       undefined,
