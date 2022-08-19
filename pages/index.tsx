@@ -11,6 +11,7 @@ const headers = [
   "Don't want that content creator shoving brand-sponsored tweets in your timeline?",
   "Too many political tweets from that domain expert you respect(ed)?",
   "Not feeling particularly happy on seeing Happy New Year tweets?",
+  "Billionaires tweeting about their hobbies not your thing?"
 ];
 
 const Main = styled.div`
