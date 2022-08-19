@@ -76,18 +76,16 @@ export const TwitterContextProvider: FC<{ children: ReactNode }> = ({
       if (pollingTimeline) return;
 
       setPollingTimeline(true);
-      
-      console.log(pollFromTweetId, nextPaginationToken);
 
       try {
-        let extendedQP = "";
+        let url = "/api/twitter/tweets/timeline?";
         if (pollFromTweetId) {
-          extendedQP = `&since_id=${pollFromTweetId}`;
+          url += `since_id=${pollFromTweetId}`;
+        } else {
+          url += `pagination_token=${nextPaginationToken}`;
         }
 
-        const res = await fetch(
-          `/api/twitter/tweets/timeline?pagination_token=${nextPaginationToken}${extendedQP}`
-        );
+        const res = await fetch(url);
         const data: Get2UsersIdTimelinesReverseChronologicalResponse =
           await res.json();
         if (pollFromTweetId) {

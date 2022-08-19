@@ -78,7 +78,9 @@ This entire hackathon has been a great learning experience; specifically
 
 ## What's next for Tweeder
 - [Context annotation entities](https://github.com/twitterdev/twitter-context-annotations) support for more focused filters
+- Support for combining multiple filters together
 - Better mobile device/small screen support
+- An indicator in the tweet component for when context annotations are unavailable for that tweet
 - Auto-expiring filters when you just want to get through a fad
 - Filter import/export to sync between multiple devices because I have no plans to save any user data server-side
 - Support for viewing threads of reply tweets
