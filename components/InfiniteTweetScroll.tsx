@@ -38,7 +38,7 @@ const InfiniteTweetScroll: FC<IInfiniteTweetScrollProps> = ({
     count: hasMoreTweetsToFetch ? timeline.length + 1 : timeline.length,
     getScrollElement: () => parentRef.current,
     estimateSize: () => 700,
-    overscan: 5,
+    overscan: 10,
     enableSmoothScroll: false,
   });
 
