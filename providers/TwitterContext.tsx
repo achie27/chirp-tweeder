@@ -112,10 +112,10 @@ export const TwitterContextProvider: FC<{ children: ReactNode }> = ({
               }) || []
             );
           });
-        }
 
-        setNextPaginationToken(data.meta?.next_token || "");
-        setTimelineHasMoreTweets((data.meta?.next_token || "").length > 0);
+          setNextPaginationToken(data.meta?.next_token || "");
+          setTimelineHasMoreTweets((data.meta?.next_token || "").length > 0);
+        }
       } catch (e) {
         // TODO: handle this someday
         console.error(e);
